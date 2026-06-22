@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Python Focus — آموزش پایتون برای نوجوانان</title>
+  <meta name="description" content="اپلیکیشن مینیمال، ADHD-friendly و حرفه‌ای برای آموزش پایتون به نوجوانان." />
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --surface: rgba(255,255,255,.82);
+      --surface-solid: #ffffff;
+      --surface-soft: #fbfbfd;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --subtle: #86868b;
+      --line: rgba(0,0,0,.08);
+      --line-strong: rgba(0,0,0,.13);
+      --blue: #0071e3;
+      --blue-soft: #e8f2ff;
+      --green: #248a3d;
+      --green-soft: #e9f7ed;
+      --orange: #bf5b00;
+      --orange-soft: #fff2df;
+      --red: #d70015;
+      --red-soft: #fff0f0;
+      --shadow: 0 18px 50px rgba(0,0,0,.08);
+      --shadow-soft: 0 10px 30px rgba(0,0,0,.055);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --font: ui-rounded, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Tahoma, Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+    [data-theme="dark"] {
+      --bg: #000;
+      --surface: rgba(28,28,30,.78);
+      --surface-solid: #1c1c1e;
+      --surface-soft: #111113;
+      --text: #f5f5f7;
+      --muted: #a1a1a6;
+      --subtle: #8e8e93;
+      --line: rgba(255,255,255,.12);
+      --line-strong: rgba(255,255,255,.18);
+      --blue: #0a84ff;
+      --blue-soft: rgba(10,132,255,.18);
+      --green: #30d158;
+      --green-soft: rgba(48,209,88,.16);
+      --orange: #ff9f0a;
+      --orange-soft: rgba(255,159,10,.16);
+      --red: #ff453a;
+      --red-soft: rgba(255,69,58,.16);
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --shadow-soft: 0 10px 30px rgba(0,0,0,.28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      background:
+        radial-gradient(circle at 20% -10%, rgba(0,113,227,.12), transparent 35%),
+        radial-gradient(circle at 90% 0%, rgba(52,199,89,.10), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      letter-spacing: -.01em;
+    }
+    body[data-calm="true"] {
+      background: var(--bg);
+    }
+    button, textarea, input { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .45; }
+    .app {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 34px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 0 18px;
+      backdrop-filter: blur(22px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .logo {
+      width: 42px; height: 42px;
+      display: grid; place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(145deg, var(--surface-solid), var(--blue-soft));
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--line);
+      font-weight: 800;
+      color: var(--blue);
+      flex: none;
+    }
+    .brand h1 { font-size: 18px; margin: 0; line-height: 1.2; }
+    .brand p { font-size: 13px; color: var(--muted); margin: 3px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .pill, .icon-btn, .primary, .secondary, .ghost, .choice, .lesson-chip {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 999px;
+      min-height: 40px;
+      padding: 9px 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
+      backdrop-filter: blur(18px);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .icon-btn { width: 42px; padding: 0; font-size: 18px; }
+    .primary {
+      background: var(--blue);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 12px 28px rgba(0,113,227,.22);
+      font-weight: 700;
+    }
+    .secondary { background: var(--surface-solid); font-weight: 700; }
+    .ghost { background: transparent; border-color: transparent; color: var(--muted); }
+    .pill:hover, .icon-btn:hover, .secondary:hover, .ghost:hover, .choice:hover, .lesson-chip:hover { transform: translateY(-1px); border-color: var(--line-strong); }
+    .primary:hover { transform: translateY(-1px); box-shadow: 0 14px 32px rgba(0,113,227,.28); }
+    .layout { display: grid; grid-template-columns: 300px 1fr; gap: 18px; align-items: start; }
+    body[data-focus="true"] .layout { grid-template-columns: 1fr; width: min(860px, 100%); margin-inline: auto; }
+    body[data-focus="true"] .sidebar, body[data-focus="true"] .hide-focus { display: none !important; }
+    .sidebar {
+      position: sticky;
+      top: 78px;
+      display: grid;
+      gap: 14px;
+    }
+    .panel, .main-card, .sheet {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(22px);
+    }
+    .panel { padding: 16px; }
+    .main-card { padding: 24px; min-height: 640px; }
+    .mini-title { margin: 0 0 10px; font-size: 13px; color: var(--muted); font-weight: 800; letter-spacing: .02em; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .stat {
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+    .stat b { display: block; font-size: 19px; margin-bottom: 3px; }
+    .stat span { font-size: 12px; color: var(--muted); }
+    .meter { height: 9px; background: rgba(127,127,127,.16); border-radius: 999px; overflow: hidden; margin-top: 10px; }
+    .meter > i { display: block; height: 100%; width: 0%; border-radius: inherit; background: var(--blue); transition: width .35s ease; }
+    .lesson-list { display: grid; gap: 8px; max-height: calc(100vh - 330px); overflow: auto; padding-left: 2px; }
+    .lesson-chip { width: 100%; justify-content: space-between; border-radius: 18px; padding: 12px; background: var(--surface-solid); text-align: right; white-space: normal; }
+    .lesson-chip[aria-current="true"] { border-color: rgba(0,113,227,.42); background: var(--blue-soft); }
+    .lesson-chip.locked { opacity: .52; }
+    .lesson-chip strong { display: block; font-size: 14px; margin-bottom: 3px; }
+    .lesson-chip small { color: var(--muted); font-size: 12px; }
+    .chip-status { font-size: 16px; margin-right: 8px; flex: none; }
+    .resume {
+      background: linear-gradient(180deg, var(--surface-solid), var(--surface));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+    .resume h2 { font-size: 18px; margin: 0 0 6px; }
+    .resume p { margin: 0; color: var(--muted); line-height: 1.7; font-size: 14px; }
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 0 24px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .step {
+      min-width: 110px;
+      border: 1px solid var(--line);
+      background: var(--surface-solid);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 10px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-weight: 750;
+      font-size: 13px;
+    }
+    .step.active { background: var(--text); color: var(--bg); border-color: transparent; }
+    .step.done { background: var(--green-soft); color: var(--green); border-color: rgba(36,138,61,.25); }
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+    .hero h2 { margin: 0; font-size: clamp(26px, 4vw, 46px); line-height: 1.12; letter-spacing: -.04em; }
+    .hero p { margin: 12px 0 0; color: var(--muted); line-height: 1.9; font-size: 16px; max-width: 72ch; }
+    .lesson-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .tag { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 999px; background: var(--surface-soft); color: var(--muted); border: 1px solid var(--line); font-size: 12px; font-weight: 700; }
+    .focus-card {
+      border: 1px solid rgba(0,113,227,.22);
+      background: var(--blue-soft);
+      color: var(--text);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .focus-card strong { display: block; margin-bottom: 6px; color: var(--blue); }
+    .focus-card p { margin: 0; line-height: 1.8; color: var(--text); }
+    .content-grid { display: grid; grid-template-columns: 1fr 330px; gap: 16px; align-items: start; }
+    .content-grid.single { grid-template-columns: 1fr; }
+    .card {
+      background: var(--surface-solid);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+    }
+    .card h3 { margin: 0 0 10px; font-size: 21px; letter-spacing: -.02em; }
+    .card h4 { margin: 0 0 8px; font-size: 16px; }
+    .card p, .card li { line-height: 2; color: var(--text); font-size: 15.5px; }
+    .card p { margin: 0 0 12px; }
+    .card ul { margin: 0; padding: 0 22px 0 0; }
+    .chunk { font-size: 16px; line-height: 2.05; }
+    .chunk mark { background: var(--orange-soft); color: var(--text); padding: 2px 6px; border-radius: 8px; }
+    .callout {
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      border-radius: 18px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+    .callout.warning { background: var(--orange-soft); border-color: rgba(191,91,0,.22); }
+    .callout.success { background: var(--green-soft); border-color: rgba(36,138,61,.22); }
+    .callout.error { background: var(--red-soft); border-color: rgba(215,0,21,.22); }
+    pre {
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      background: #111;
+      color: #f5f5f7;
+      border-radius: 18px;
+      padding: 16px;
+      overflow: auto;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 12px 0;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    code { font-family: var(--mono); }
+    .example-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .progress-dots { display: flex; gap: 5px; direction: ltr; }
+    .dot { width: 7px; height: 7px; border-radius: 999px; background: rgba(127,127,127,.22); }
+    .dot.active { background: var(--blue); }
+    .choice-grid { display: grid; gap: 10px; margin-top: 14px; }
+    .choice { justify-content: flex-start; width: 100%; border-radius: 18px; min-height: auto; padding: 14px; text-align: right; white-space: normal; background: var(--surface-soft); }
+    .choice.selected { border-color: rgba(0,113,227,.5); background: var(--blue-soft); }
+    .choice.correct { border-color: rgba(36,138,61,.38); background: var(--green-soft); }
+    .choice.wrong { border-color: rgba(215,0,21,.38); background: var(--red-soft); }
+    .practice-layout { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 16px; }
+    .exercise-tabs { display: grid; gap: 8px; }
+    .exercise-tab {
+      width: 100%; text-align: right; border: 1px solid var(--line); background: var(--surface-solid); color: var(--text);
+      border-radius: 18px; padding: 12px; display: flex; justify-content: space-between; gap: 8px; align-items: center;
+    }
+    .exercise-tab.active { border-color: rgba(0,113,227,.42); background: var(--blue-soft); }
+    .exercise-tab small { color: var(--muted); display: block; margin-top: 3px; }
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      background: #0f1115;
+      color: #f7f7f9;
+      border-radius: 20px;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.7;
+      direction: ltr;
+      text-align: left;
+      resize: vertical;
+      min-height: 230px;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    textarea:focus { border-color: rgba(10,132,255,.9); box-shadow: 0 0 0 4px rgba(0,113,227,.15); }
+    .reflection-box { min-height: 110px; direction: rtl; text-align: right; background: var(--surface-soft); color: var(--text); font-family: var(--font); }
+    .output {
+      min-height: 74px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 18px;
+      padding: 14px;
+      font-family: var(--mono);
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      overflow: auto;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+    .quiet-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .muted { color: var(--muted); }
+    .small { font-size: 13px; line-height: 1.7; }
+    .tiny { font-size: 12px; color: var(--subtle); }
+    .side-note { position: sticky; top: 92px; display: grid; gap: 12px; }
+    .checklist { display: grid; gap: 8px; margin-top: 8px; }
+    .check-item { display: flex; align-items: flex-start; gap: 8px; color: var(--muted); font-size: 13px; line-height: 1.65; }
+    .check-item i { width: 20px; height: 20px; border-radius: 999px; display: inline-grid; place-items: center; border: 1px solid var(--line); flex: none; font-style: normal; font-size: 12px; }
+    .check-item.done { color: var(--green); }
+    .check-item.done i { background: var(--green-soft); border-color: rgba(36,138,61,.25); }
+    .break-card {
+      display: none;
+      background: var(--orange-soft);
+      border: 1px solid rgba(191,91,0,.22);
+      border-radius: 20px;
+      padding: 15px;
+      margin-top: 12px;
+    }
+    .break-card.show { display: block; }
+    .toast {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      z-index: 100;
+      background: var(--surface-solid);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      max-width: min(440px, calc(100vw - 36px));
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+      line-height: 1.7;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,.24); z-index: 80;
+      display: none; align-items: center; justify-content: center; padding: 18px;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal { width: min(600px,100%); background: var(--surface-solid); border: 1px solid var(--line); border-radius: 30px; box-shadow: var(--shadow); padding: 22px; }
+    .modal h3 { margin: 0 0 8px; font-size: 24px; }
+    .modal p { line-height: 1.9; color: var(--muted); }
+    .hidden { display: none !important; }
+    .mobile-nav { display: none; }
+    @media (max-width: 960px) {
+      .layout, .content-grid, .practice-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; order: 2; }
+      .main-card { padding: 18px; min-height: auto; }
+      .hero { grid-template-columns: 1fr; }
+      .side-note { position: static; }
+      .topbar { align-items: flex-start; }
+      .brand p { display: none; }
+      .top-actions .pill { display: none; }
+      .lesson-list { max-height: none; }
+      .mobile-nav { display: flex; position: sticky; bottom: 12px; z-index: 30; justify-content: center; gap: 8px; margin-top: 18px; }
+      .mobile-nav button { box-shadow: var(--shadow-soft); }
+    }
+    @media (max-width: 560px) {
+      .app { width: min(100% - 18px, 1180px); padding-top: 10px; }
+      .topbar { padding-bottom: 12px; }
+      .logo { width: 38px; height: 38px; }
+      .brand h1 { font-size: 16px; }
+      .icon-btn { width: 38px; min-height: 38px; }
+      .hero h2 { font-size: 29px; }
+      .step { min-width: 92px; padding: 9px 10px; }
+      textarea { min-height: 220px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body data-theme="light" data-focus="false" data-calm="false">
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">Py</div>
+        <div>
+          <h1>Python Focus</h1>
+          <p>آموزش پایتون با جریان آرام، واضح و مناسب نوجوانان ADHD</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="pill" id="nextBtnTop">ادامه از قدم بعدی</button>
+        <button class="icon-btn" id="focusBtn" title="Focus Mode">◌</button>
+        <button class="icon-btn" id="themeBtn" title="Dark / Light">☾</button>
+        <button class="icon-btn" id="calmBtn" title="Calm background">≋</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <section class="panel">
+          <p class="mini-title">امروز فقط همین کافی است</p>
+          <div class="resume" id="resumeBox"></div>
+        </section>
+        <section class="panel hide-focus">
+          <p class="mini-title">پیشرفت آرام</p>
+          <div class="stat-grid">
+            <div class="stat"><b id="xpStat">0</b><span>XP</span></div>
+            <div class="stat"><b id="streakStat">0</b><span>روز</span></div>
+            <div class="stat"><b id="masteryStat">0%</b><span>تسلط</span></div>
+          </div>
+          <div class="meter"><i id="courseMeter"></i></div>
+          <p class="tiny" style="margin:10px 0 0">هدف: پیشرفت کوچک، ثابت و بدون عجله.</p>
+        </section>
+        <section class="panel hide-focus">
+          <p class="mini-title">نقشه درس‌ها</p>
+          <div class="lesson-list" id="lessonList"></div>
+        </section>
+      </aside>
+
+      <section class="main-card" id="main"></section>
+    </main>
+
+    <nav class="mobile-nav hide-focus">
+      <button class="secondary" id="mobileLessonBtn">درس‌ها</button>
+      <button class="primary" id="mobileNextBtn">قدم بعدی</button>
+    </nav>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3 id="modalTitle">استراحت کوتاه</h3>
+      <p id="modalText"></p>
+      <div class="actions">
+        <button class="primary" id="modalClose">برگشت به یادگیری</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  'use strict';
+
+  const LS_KEY = 'python-focus-adhd-best-v1';
+  const STEPS = [
+    { id:'understand', label:'فهمیدن', icon:'1' },
+    { id:'examples', label:'مثال', icon:'2' },
+    { id:'predict', label:'پیش‌بینی', icon:'3' },
+    { id:'practice', label:'تمرین', icon:'4' },
+    { id:'reflect', label:'جمع‌بندی', icon:'5' }
+  ];
+
+  const lessons = [
+    {
+      id:'print', title:'شروع مطمئن با خروجی', skill:'print', minutes:8,
+      promise:'در پایان این درس می‌توانی از پایتون بخواهی چیزی را روی صفحه نشان دهد و تفاوت متن و عدد را بفهمی.',
+      why:'اولین حس موفقیت در برنامه‌نویسی باید سریع و واضح باشد. دستور print ساده است، اما پایه‌ی دیدن نتیجه، تست کردن و فهمیدن رفتار برنامه است.',
+      chunks:[
+        'در پایتون، دستور <mark>print()</mark> مثل یک بلندگو برای برنامه است. هر چیزی را که داخل پرانتز بگذاری، برنامه تلاش می‌کند آن را روی خروجی نشان دهد. این خروجی می‌تواند یک متن، یک عدد، یا نتیجه‌ی یک محاسبه باشد.',
+        'اگر می‌خواهی یک متن چاپ شود، باید آن متن را بین کوتیشن بگذاری؛ مثلا <code>"سلام"</code>. کوتیشن به پایتون می‌گوید: «این را به عنوان متن ببین، نه به عنوان اسم متغیر یا دستور.»',
+        'اگر عدد را چاپ می‌کنی، لازم نیست کوتیشن بگذاری. مثلا <code>print(7)</code> عدد ۷ را چاپ می‌کند. اگر <code>print(3 + 4)</code> بنویسی، پایتون اول محاسبه می‌کند و بعد نتیجه را چاپ می‌کند.',
+        'یک نکته‌ی مهم برای شروع: برنامه‌نویس خوب فقط کد نمی‌نویسد؛ نتیجه را می‌بیند، با انتظار خودش مقایسه می‌کند، و اگر فرق داشت آرام بررسی می‌کند. این عادت از همین درس شروع می‌شود.',
+        'برای ذهن‌های پرانرژی یا ADHD، بهتر است هر بار فقط یک هدف کوچک داشته باشی: «یک خروجی درست بساز». لازم نیست همه چیز را یک‌جا یاد بگیری. همین یک قدم کافی است.'
+      ],
+      examples:[
+        {title:'چاپ متن', code:'print("سلام پایتون")', output:'سلام پایتون', note:'متن داخل کوتیشن قرار گرفته، پس همان متن چاپ می‌شود.'},
+        {title:'چاپ نتیجه محاسبه', code:'print(10 + 5)\nprint(20 - 3)', output:'15\n17', note:'پایتون اول عملیات ریاضی را انجام می‌دهد و بعد نتیجه را نشان می‌دهد.'},
+        {title:'چاپ چند چیز جدا', code:'print("سن من", 15)\nprint("امتیاز:", 120)', output:'سن من 15\nامتیاز: 120', note:'با کاما می‌توان چند مقدار را کنار هم چاپ کرد.'}
+      ],
+      predict:{code:'print("Python")\nprint(2 + 3)', choices:['Python سپس 5','Python سپس 2 + 3','خطا می‌دهد چون دو print داریم'], answer:0, explain:'هر print در یک خط جدا خروجی می‌دهد. عبارت 2 + 3 محاسبه می‌شود و 5 چاپ می‌شود.'},
+      exercises:[
+        {id:'p1', title:'پیام شروع', goal:'یک برنامه بنویس که دقیقاً عبارت Hello Python را چاپ کند.', checks:[{type:'output', value:'Hello Python'}], hints:['از print استفاده کن.', 'متن باید داخل کوتیشن باشد.', 'خروجی باید دقیقاً Hello Python باشد.']},
+        {id:'p2', title:'محاسبه ساده', goal:'یک برنامه بنویس که حاصل 8 + 7 را چاپ کند. خروجی باید فقط 15 باشد.', checks:[{type:'output', value:'15'}], hints:['داخل print می‌توانی محاسبه بنویسی.', 'به جای نوشتن متن، عددها را جمع کن.', 'print(8 + 7) خروجی را می‌سازد.']},
+        {id:'p3', title:'دو خط خروجی', goal:'دو خط خروجی بساز: خط اول نام Python، خط دوم عدد 100.', checks:[{type:'output', value:'Python\n100'}], hints:['دو بار print لازم داری.', 'هر print یک خط جدا می‌سازد.', 'خط اول متن است، خط دوم عدد.']}
+      ]
+    },
+    {
+      id:'variables', title:'متغیرها؛ نام دادن به اطلاعات', skill:'variables', minutes:10,
+      promise:'یاد می‌گیری چطور به اطلاعات اسم بدهی تا برنامه قابل تغییر، تمیز و قابل فهم شود.',
+      why:'بدون متغیر، برنامه مثل یک جمله‌ی خشک است. با متغیر، برنامه حافظه و معنی پیدا می‌کند.',
+      chunks:[
+        'متغیر یعنی یک اسم برای نگهداری یک مقدار. مثلا وقتی می‌نویسی <code>score = 20</code>، به پایتون می‌گویی مقدار ۲۰ را با نام score نگه دار.',
+        'علامت مساوی در پایتون مثل ریاضی همیشه معنی «برابر است» ندارد. در برنامه‌نویسی معمولاً یعنی «این مقدار را داخل این نام قرار بده». سمت راست ساخته می‌شود و در سمت چپ ذخیره می‌شود.',
+        'نام متغیر باید واضح باشد. <code>x</code> گاهی خوب است، اما <code>age</code>، <code>score</code> و <code>player_name</code> برای یادگیری بهترند چون به مغز کمک می‌کنند معنی کد را سریع‌تر بفهمد.',
+        'متغیرها باعث می‌شوند برنامه را راحت تغییر دهی. اگر امتیاز کاربر از ۲۰ به ۳۰ تغییر کند، کافی است مقدار متغیر را عوض کنی، نه همه جای برنامه را.',
+        'برای ADHD، نام‌گذاری خوب یک ابزار کمکی است. نام واضح یعنی لازم نیست هر بار در ذهنت حدس بزنی این عدد یا متن برای چیست.'
+      ],
+      examples:[
+        {title:'ذخیره نام', code:'name = "Sara"\nprint(name)', output:'Sara', note:'متن Sara در متغیر name ذخیره شده و بعد چاپ می‌شود.'},
+        {title:'محاسبه با متغیر', code:'score = 12\nbonus = 3\nprint(score + bonus)', output:'15', note:'مقادیر دو متغیر با هم جمع می‌شوند.'},
+        {title:'تغییر مقدار', code:'level = 1\nprint(level)\nlevel = 2\nprint(level)', output:'1\n2', note:'متغیر می‌تواند بعداً مقدار تازه بگیرد.'}
+      ],
+      predict:{code:'coins = 10\ncoins = coins + 5\nprint(coins)', choices:['10','5','15'], answer:2, explain:'ابتدا coins برابر ۱۰ است. بعد مقدار قبلی‌اش با ۵ جمع می‌شود و مقدار جدید ۱۵ می‌شود.'},
+      exercises:[
+        {id:'v1', title:'نام و سن', goal:'دو متغیر name و age بساز. سپس خروجی دقیقاً دو خط باشد: خط اول Ali و خط دوم 14.', checks:[{type:'output', value:'Ali\n14'},{type:'contains', value:'name'},{type:'contains', value:'age'}], hints:['اول name را بساز.', 'بعد age را بساز.', 'برای خروجی دو خط، دو print جدا بنویس.']},
+        {id:'v2', title:'امتیاز نهایی', goal:'متغیر score را 40 و bonus را 10 قرار بده. سپس مجموع آن‌ها را چاپ کن. خروجی باید 50 باشد.', checks:[{type:'output', value:'50'},{type:'contains', value:'score'},{type:'contains', value:'bonus'}], hints:['دو متغیر لازم داری.', 'داخل print می‌توانی score + bonus بنویسی.', 'خروجی نهایی باید فقط 50 باشد.']},
+        {id:'v3', title:'تغییر مرحله', goal:'متغیر level را اول 1 قرار بده، بعد مقدارش را به 2 تغییر بده، سپس فقط مقدار نهایی را چاپ کن.', checks:[{type:'output', value:'2'},{type:'contains', value:'level'}], hints:['level = 1 شروع خوبی است.', 'بعد level = 2 بنویس.', 'فقط بعد از تغییر، print کن.']}
+      ]
+    },
+    {
+      id:'types', title:'نوع داده؛ متن، عدد و تبدیل', skill:'types', minutes:12,
+      promise:'می‌فهمی چرا متن و عدد رفتار متفاوت دارند و چطور آن‌ها را درست ترکیب کنی.',
+      why:'خیلی از خطاهای تازه‌کارها از قاطی کردن متن و عدد می‌آید. فهم نوع داده باعث می‌شود خطاها قابل پیش‌بینی شوند.',
+      chunks:[
+        'پایتون با مقدارها مثل یک چیز واحد رفتار نمی‌کند. عدد، متن، عدد اعشاری و درست/نادرست هرکدام نوع خودشان را دارند. به این می‌گوییم نوع داده یا data type.',
+        'متن یا string بین کوتیشن نوشته می‌شود. عدد صحیح یا integer بدون کوتیشن نوشته می‌شود. مثلا <code>"15"</code> متن است، اما <code>15</code> عدد است. این دو از نظر ظاهری شبیه‌اند، اما رفتارشان فرق دارد.',
+        'اگر دو عدد را با + جمع کنی، حاصل جمع ریاضی می‌شود. اگر دو متن را با + کنار هم بگذاری، متن‌ها به هم می‌چسبند. این رفتار متفاوت به خاطر نوع داده است.',
+        'برای تبدیل عدد به متن می‌توانی از <code>str()</code> استفاده کنی. برای تبدیل متن عددی به عدد صحیح می‌توانی از <code>int()</code> استفاده کنی. این تبدیل‌ها مثل پل بین دو نوع داده هستند.',
+        'در یادگیری بهتر است همیشه از خودت بپرسی: «این چیزی که دارم با آن کار می‌کنم متن است یا عدد؟» همین سؤال ساده جلوی خیلی از خطاها را می‌گیرد.'
+      ],
+      examples:[
+        {title:'عدد واقعی', code:'age = 15\nprint(age + 1)', output:'16', note:'age عدد است، پس با ۱ جمع می‌شود.'},
+        {title:'متن شبیه عدد', code:'age = "15"\nprint(age + "1")', output:'151', note:'دو متن کنار هم چسبیده‌اند؛ جمع ریاضی انجام نشده است.'},
+        {title:'ترکیب متن و عدد', code:'score = 90\nprint("Score: " + str(score))', output:'Score: 90', note:'عدد با str به متن تبدیل شده تا کنار متن چاپ شود.'}
+      ],
+      predict:{code:'x = "4"\ny = "5"\nprint(x + y)', choices:['9','45','خطا می‌دهد'], answer:1, explain:'x و y متن هستند، پس + آن‌ها را به هم می‌چسباند.'},
+      exercises:[
+        {id:'t1', title:'چسباندن متن', goal:'دو متغیر first و last بساز که خروجی دقیقاً Ada Lovelace شود.', checks:[{type:'output', value:'Ada Lovelace'},{type:'contains', value:'first'},{type:'contains', value:'last'}], hints:['first می‌تواند Ada باشد.', 'last می‌تواند Lovelace باشد.', 'بین دو کلمه یک فاصله لازم است.']},
+        {id:'t2', title:'تبدیل عدد به متن', goal:'متغیر score را 88 قرار بده و خروجی دقیقاً Score: 88 باشد. باید از str استفاده کنی.', checks:[{type:'output', value:'Score: 88'},{type:'contains', value:'str'}], hints:['score عدد باشد نه متن.', 'برای ترکیب با متن از str(score) استفاده کن.', 'خروجی باید دقیقاً Score: 88 باشد.']},
+        {id:'t3', title:'تبدیل متن به عدد', goal:'متغیر a را متن "20" و b را متن "5" قرار بده. آن‌ها را با int تبدیل کن و حاصل جمع را چاپ کن. خروجی باید 25 باشد.', checks:[{type:'output', value:'25'},{type:'contains', value:'int'}], hints:['a و b اول متن هستند.', 'برای جمع ریاضی باید int(a) و int(b) داشته باشی.', 'خروجی فقط 25 باشد.']}
+      ]
+    },
+    {
+      id:'if', title:'شرط؛ تصمیم گرفتن در برنامه', skill:'conditionals', minutes:12,
+      promise:'برنامه‌ای می‌نویسی که براساس وضعیت، پاسخ متفاوت بدهد.',
+      why:'برنامه‌های واقعی فقط یک مسیر ندارند. شرط‌ها باعث می‌شوند برنامه تصمیم بگیرد.',
+      chunks:[
+        'دستور <code>if</code> یعنی «اگر این شرط درست بود، این کار را انجام بده». شرط‌ها معمولاً با مقایسه ساخته می‌شوند: بزرگ‌تر، کوچک‌تر، برابر، نابرابر.',
+        'در پایتون، بعد از شرط دو نقطه می‌آید و خط‌های داخل شرط باید تورفتگی داشته باشند. این تورفتگی یا indentation برای پایتون بسیار مهم است، چون نشان می‌دهد کدام دستور داخل شرط است.',
+        '<code>else</code> یعنی «در غیر این صورت». اگر شرط if درست نبود، برنامه وارد بخش else می‌شود. این ساختار برای پیام‌های موفق/ناموفق، سنجش امتیاز، و تصمیم‌های ساده عالی است.',
+        'می‌توانی با <code>elif</code> چند حالت بسازی. مثلا اگر نمره عالی بود یک پیام، اگر متوسط بود پیام دیگر، و اگر پایین بود پیام سوم.',
+        'برای کاهش آشفتگی ذهنی، شرط‌ها را مثل سؤال بخوان: «آیا score بزرگ‌تر یا مساوی 50 است؟ اگر بله، Pass؛ اگر نه، Try again.»'
+      ],
+      examples:[
+        {title:'if ساده', code:'score = 70\nif score >= 50:\n    print("Pass")', output:'Pass', note:'چون score از ۵۰ بیشتر است، پیام چاپ می‌شود.'},
+        {title:'if و else', code:'battery = 15\nif battery > 20:\n    print("OK")\nelse:\n    print("Charge")', output:'Charge', note:'شرط درست نیست، پس بخش else اجرا می‌شود.'},
+        {title:'چند حالت', code:'level = 3\nif level == 1:\n    print("Beginner")\nelif level == 2:\n    print("Junior")\nelse:\n    print("Builder")', output:'Builder', note:'هیچ‌کدام از دو شرط اول درست نیست، پس else اجرا می‌شود.'}
+      ],
+      predict:{code:'age = 13\nif age >= 13:\n    print("Teen")\nelse:\n    print("Kid")', choices:['Teen','Kid','هیچ خروجی ندارد'], answer:0, explain:'۱۳ بزرگ‌تر یا مساوی ۱۳ است، پس شرط درست است.'},
+      exercises:[
+        {id:'i1', title:'قبولی', goal:'متغیر score را 65 بگذار. اگر score حداقل 50 بود Pass چاپ شود، وگرنه Try again.', checks:[{type:'output', value:'Pass'},{type:'contains', value:'if'},{type:'contains', value:'else'}], hints:['شرط score >= 50 لازم است.', 'بعد از if دو نقطه بگذار.', 'خط‌های داخل if و else باید تورفتگی داشته باشند.']},
+        {id:'i2', title:'شارژ باتری', goal:'متغیر battery را 12 بگذار. اگر کمتر از 20 بود Low battery چاپ شود، وگرنه Ready.', checks:[{type:'output', value:'Low battery'},{type:'contains', value:'if'}], hints:['شرط battery < 20 را امتحان کن.', 'خروجی دقیقاً Low battery باشد.', 'else هم برای حالت Ready لازم است.']},
+        {id:'i3', title:'سطح کاربر', goal:'متغیر xp را 120 بگذار. اگر xp حداقل 100 بود Level up چاپ شود، وگرنه Keep going.', checks:[{type:'output', value:'Level up'},{type:'contains', value:'xp'}], hints:['xp = 120 شروع است.', 'شرط xp >= 100 درست می‌شود.', 'پیام‌ها دقیقاً مطابق خواسته باشند.']}
+      ]
+    },
+    {
+      id:'loops', title:'حلقه؛ تکرار بدون خستگی', skill:'loops', minutes:13,
+      promise:'می‌توانی کاری را چند بار تکرار کنی بدون اینکه همان خط را بارها بنویسی.',
+      why:'کامپیوتر برای تکرار ساخته شده است. حلقه‌ها به تو قدرت می‌دهند کارهای تکراری را تمیز و کوتاه بنویسی.',
+      chunks:[
+        'حلقه یعنی اجرای چندباره‌ی یک بخش از کد. وقتی می‌خواهی کاری را ۳ بار، ۱۰ بار یا برای همه آیتم‌های یک لیست انجام دهی، حلقه ابزار اصلی توست.',
+        '<code>for</code> معمولاً وقتی استفاده می‌شود که تعداد تکرارها را می‌دانی. مثلا <code>for i in range(3)</code> یعنی برای i با مقدارهای ۰، ۱ و ۲ تکرار کن.',
+        '<code>range(5)</code> از صفر شروع می‌کند و تا قبل از ۵ می‌رود: ۰، ۱، ۲، ۳، ۴. این نکته در ابتدا عجیب است، اما در پایتون بسیار رایج است.',
+        'خط‌های داخل حلقه هم مثل شرط باید تورفتگی داشته باشند. اگر تورفتگی را اشتباه بگذاری، پایتون نمی‌فهمد چه چیزی باید تکرار شود.',
+        'برای ADHD، حلقه‌ها می‌توانند حس کنترل ایجاد کنند: یک الگوی کوچک را درست می‌کنی، بعد کامپیوتر آن را تکرار می‌کند. لازم نیست همه تکرارها را با دست بنویسی.'
+      ],
+      examples:[
+        {title:'سه بار سلام', code:'for i in range(3):\n    print("Hi")', output:'Hi\nHi\nHi', note:'کد داخل حلقه سه بار اجرا می‌شود.'},
+        {title:'شمردن از صفر', code:'for i in range(4):\n    print(i)', output:'0\n1\n2\n3', note:'range(4) شامل ۴ نمی‌شود.'},
+        {title:'تکرار با متن', code:'for step in range(1, 4):\n    print("Step", step)', output:'Step 1\nStep 2\nStep 3', note:'range(1, 4) از ۱ تا ۳ می‌رود.'}
+      ],
+      predict:{code:'for i in range(2):\n    print("Go")', choices:['Go یک بار','Go دو بار','Go سه بار'], answer:1, explain:'range(2) دو مقدار دارد: ۰ و ۱، پس حلقه دو بار اجرا می‌شود.'},
+      exercises:[
+        {id:'l1', title:'سه خط Python', goal:'با یک حلقه for عبارت Python را دقیقاً سه بار چاپ کن.', checks:[{type:'output', value:'Python\nPython\nPython'},{type:'contains', value:'for'},{type:'contains', value:'range'}], hints:['از for استفاده کن، نه سه print جدا.', 'range(3) سه بار تکرار می‌کند.', 'داخل حلقه print("Python") بنویس.']},
+        {id:'l2', title:'شماره‌ها', goal:'با حلقه عددهای 1 تا 5 را هر کدام در یک خط چاپ کن.', checks:[{type:'output', value:'1\n2\n3\n4\n5'},{type:'contains', value:'for'}], hints:['range(1, 6) از ۱ تا ۵ می‌رود.', 'هر عدد را داخل حلقه چاپ کن.', 'خروجی باید پنج خط باشد.']},
+        {id:'l3', title:'جمع آرام', goal:'با حلقه for مجموع عددهای 1 تا 4 را حساب کن و فقط نتیجه را چاپ کن. خروجی باید 10 باشد.', checks:[{type:'output', value:'10'},{type:'contains', value:'total'},{type:'contains', value:'for'}], hints:['یک متغیر total = 0 بساز.', 'در حلقه، عدد را به total اضافه کن.', 'بعد از حلقه total را چاپ کن.']}
+      ]
+    },
+    {
+      id:'lists', title:'لیست؛ نگهداری چند چیز با هم', skill:'lists', minutes:13,
+      promise:'یاد می‌گیری چند مقدار را در یک ساختار نگه داری و با آن‌ها کار کنی.',
+      why:'برنامه‌های واقعی معمولاً با یک مقدار کار نمی‌کنند؛ با مجموعه‌ای از نام‌ها، امتیازها، پیام‌ها یا آیتم‌ها کار می‌کنند.',
+      chunks:[
+        'لیست در پایتون یک ظرف مرتب برای چند مقدار است. مثلا <code>scores = [10, 20, 30]</code> سه عدد را در یک متغیر نگه می‌دارد.',
+        'هر آیتم در لیست یک جایگاه یا index دارد. پایتون از صفر می‌شمارد، پس اولین آیتم جایگاه ۰ دارد. این قانون در ابتدا کمی عجیب است، اما خیلی مهم است.',
+        'با حلقه for می‌توانی روی آیتم‌های لیست حرکت کنی. مثلا <code>for name in names</code> یعنی هر بار یکی از نام‌ها را بردار و با نام موقت name از آن استفاده کن.',
+        'برای اضافه کردن آیتم به لیست می‌توانی از <code>append()</code> استفاده کنی. این روش در برنامه‌های واقعی برای ساختن فهرست نتایج، پیام‌ها یا انتخاب‌ها زیاد استفاده می‌شود.',
+        'لیست‌ها به یادگیری کمک می‌کنند چون داده‌ها را مرتب و قابل دیدن می‌کنند. به جای چند متغیر پراکنده، یک ساختار واضح داری.'
+      ],
+      examples:[
+        {title:'چاپ اولین آیتم', code:'names = ["Ali", "Sara", "Mina"]\nprint(names[0])', output:'Ali', note:'اولین جایگاه لیست ۰ است.'},
+        {title:'حلقه روی لیست', code:'tasks = ["read", "code", "rest"]\nfor task in tasks:\n    print(task)', output:'read\ncode\nrest', note:'حلقه هر آیتم را جدا چاپ می‌کند.'},
+        {title:'اضافه کردن آیتم', code:'items = []\nitems.append("book")\nitems.append("pen")\nprint(items)', output:"['book', 'pen']", note:'append آیتم جدید را به انتهای لیست اضافه می‌کند.'}
+      ],
+      predict:{code:'colors = ["red", "blue", "green"]\nprint(colors[1])', choices:['red','blue','green'], answer:1, explain:'index 1 یعنی آیتم دوم، چون شمارش از صفر شروع می‌شود.'},
+      exercises:[
+        {id:'ls1', title:'اولین دوست', goal:'لیستی به نام friends با سه نام بساز و فقط اولین نام را چاپ کن. خروجی باید Ali باشد.', checks:[{type:'output', value:'Ali'},{type:'contains', value:'friends'},{type:'contains', value:'['}], hints:['friends = ["Ali", ...] بساز.', 'اولین آیتم index صفر دارد.', 'friends[0] را چاپ کن.']},
+        {id:'ls2', title:'چاپ همه کارها', goal:'لیستی با سه کار read, code, sleep بساز و با حلقه هر کدام را در یک خط چاپ کن.', checks:[{type:'output', value:'read\ncode\nsleep'},{type:'contains', value:'for'}], hints:['لیست شامل سه متن باشد.', 'با for روی لیست حرکت کن.', 'هر task را چاپ کن.']},
+        {id:'ls3', title:'لیست امتیازها', goal:'لیست scores شامل 10 و 20 و 30 بساز. مجموع آن‌ها را با sum چاپ کن. خروجی باید 60 باشد.', checks:[{type:'output', value:'60'},{type:'contains', value:'sum'}], hints:['scores = [10, 20, 30]', 'sum(scores) مجموع را می‌دهد.', 'فقط نتیجه را چاپ کن.']}
+      ]
+    },
+    {
+      id:'functions', title:'تابع؛ ساختن ابزار خودت', skill:'functions', minutes:14,
+      promise:'می‌توانی کدهای تکراری را به یک ابزار قابل استفاده دوباره تبدیل کنی.',
+      why:'تابع‌ها برنامه را تمیز، قابل تست و قابل توسعه می‌کنند. این مرحله شروع فکر کردن مثل یک برنامه‌نویس واقعی است.',
+      chunks:[
+        'تابع یک بسته‌ی کوچک از کد است که نام دارد. با <code>def</code> تابع می‌سازی و بعد هر وقت خواستی آن را صدا می‌زنی.',
+        'تابع‌ها می‌توانند ورودی بگیرند. مثلا <code>def greet(name)</code> یعنی این تابع یک مقدار به نام name دریافت می‌کند و از آن داخل خودش استفاده می‌کند.',
+        'گاهی تابع چیزی چاپ می‌کند، گاهی چیزی برمی‌گرداند. وقتی از <code>return</code> استفاده می‌کنی، تابع یک نتیجه تحویل می‌دهد تا بعداً بتوانی از آن در محاسبه یا چاپ استفاده کنی.',
+        'اگر برنامه بزرگ شود، تابع‌ها مثل کشوهای مرتب هستند. هر کار در جای خودش قرار می‌گیرد: محاسبه، پیام، بررسی، تبدیل، و غیره.',
+        'برای ذهن ADHD، تابع خوب یعنی هر بخش برنامه یک نام و هدف روشن دارد. این باعث می‌شود برنامه کمتر شلوغ و قابل دنبال کردن شود.'
+      ],
+      examples:[
+        {title:'تابع ساده', code:'def say_hi():\n    print("Hi")\n\nsay_hi()', output:'Hi', note:'تابع ساخته شده و بعد صدا زده شده است.'},
+        {title:'تابع با ورودی', code:'def greet(name):\n    print("Hi", name)\n\ngreet("Sara")', output:'Hi Sara', note:'مقدار Sara وارد تابع می‌شود.'},
+        {title:'تابع با return', code:'def add(a, b):\n    return a + b\n\nprint(add(3, 4))', output:'7', note:'تابع نتیجه را برمی‌گرداند و بعد چاپ می‌شود.'}
+      ],
+      predict:{code:'def double(x):\n    return x * 2\n\nprint(double(6))', choices:['6','12','double'], answer:1, explain:'تابع عدد ۶ را می‌گیرد، در ۲ ضرب می‌کند، و ۱۲ برمی‌گرداند.'},
+      exercises:[
+        {id:'f1', title:'سلام با تابع', goal:'تابعی به نام say_hello بساز که Hello را چاپ کند. سپس تابع را صدا بزن.', checks:[{type:'output', value:'Hello'},{type:'contains', value:'def say_hello'}], hints:['با def say_hello(): شروع کن.', 'داخل تابع print("Hello") بنویس.', 'بعد از تعریف تابع، say_hello() را صدا بزن.']},
+        {id:'f2', title:'دو برابر', goal:'تابعی به نام double بساز که یک عدد بگیرد و دو برابر آن را return کند. سپس double(8) را چاپ کن. خروجی باید 16 باشد.', checks:[{type:'output', value:'16'},{type:'contains', value:'return'},{type:'contains', value:'double'}], hints:['تابع باید ورودی x داشته باشد.', 'return x * 2 لازم است.', 'print(double(8)) خروجی را نشان می‌دهد.']},
+        {id:'f3', title:'جمع دو عدد', goal:'تابعی به نام add بساز که a و b بگیرد و مجموع را return کند. سپس add(9, 6) را چاپ کن. خروجی باید 15 باشد.', checks:[{type:'output', value:'15'},{type:'contains', value:'def add'},{type:'contains', value:'return'}], hints:['def add(a, b):', 'داخل تابع return a + b', 'بعد print(add(9, 6)) را بنویس.']}
+      ]
+    }
+  ];
+
+  const defaultState = {
+    lessonIndex: 0,
+    stepIndex: 0,
+    chunkIndex: 0,
+    exampleIndex: 0,
+    exerciseIndex: 0,
+    completed: {},
+    predictions: {},
+    passedExercises: {},
+    reflections: {},
+    drafts: {},
+    attempts: {},
+    hints: {},
+    xp: 0,
+    streak: 0,
+    lastActive: '',
+    theme: 'light',
+    focus: false,
+    calm: false,
+    pyRuns: 0
+  };
+
+  let state = loadState();
+  let toastTimer = null;
+  let pyWorker = null;
+  let pyReady = false;
+  let pySeq = 0;
+  const pyPending = new Map();
+
+  const $ = sel => document.querySelector(sel);
+  const main = $('#main');
+
+  init();
+
+  function init(){
+    touchToday();
+    applyPreferences();
+    bindGlobal();
+    initPyodideWorker();
+    render();
+  }
+
+  function loadState(){
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return {...defaultState};
+      return {...defaultState, ...JSON.parse(raw)};
+    } catch(e) { return {...defaultState}; }
+  }
+  function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  function todayKey(){ return new Date().toISOString().slice(0,10); }
+  function touchToday(){
+    const today = todayKey();
+    if (state.lastActive !== today) {
+      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+      state.streak = state.lastActive === yesterday ? state.streak + 1 : 1;
+      state.lastActive = today;
+      saveState();
+    }
+  }
+  function applyPreferences(){
+    document.body.dataset.theme = state.theme;
+    document.body.dataset.focus = String(state.focus);
+    document.body.dataset.calm = String(state.calm);
+    $('#themeBtn').textContent = state.theme === 'dark' ? '☀' : '☾';
+    $('#focusBtn').textContent = state.focus ? '●' : '◌';
+    $('#calmBtn').textContent = state.calm ? '∿' : '≋';
+  }
+  function bindGlobal(){
+    $('#themeBtn').addEventListener('click', () => { state.theme = state.theme === 'dark' ? 'light' : 'dark'; saveState(); applyPreferences(); });
+    $('#focusBtn').addEventListener('click', () => { state.focus = !state.focus; saveState(); applyPreferences(); render(); });
+    $('#calmBtn').addEventListener('click', () => { state.calm = !state.calm; saveState(); applyPreferences(); });
+    $('#nextBtnTop').addEventListener('click', goNextSmart);
+    $('#mobileNextBtn').addEventListener('click', goNextSmart);
+    $('#mobileLessonBtn').addEventListener('click', () => { state.focus = false; saveState(); applyPreferences(); setTimeout(() => document.querySelector('.lesson-list')?.scrollIntoView({behavior:'smooth'}), 50); });
+    $('#modalClose').addEventListener('click', () => $('#modalBackdrop').classList.remove('show'));
+  }
+
+  function currentLesson(){ return lessons[state.lessonIndex] || lessons[0]; }
+  function isLessonUnlocked(index){ return index === 0 || !!state.completed[lessons[index-1].id]; }
+  function isLessonDone(lesson=currentLesson()){ return !!state.completed[lesson.id]; }
+  function passedCount(lesson=currentLesson()){
+    return lesson.exercises.filter(ex => state.passedExercises[lesson.id + ':' + ex.id]).length;
+  }
+  function predictionDone(lesson=currentLesson()){
+    return typeof state.predictions[lesson.id] === 'number';
+  }
+  function reflectionDone(lesson=currentLesson()){
+    const v = (state.reflections[lesson.id] || '').trim();
+    return v.length >= 25;
+  }
+  function masteryPercent(){
+    const total = lessons.length;
+    const done = lessons.filter(l => state.completed[l.id]).length;
+    return Math.round((done / total) * 100);
+  }
+  function stepIsDone(stepIndex, lesson=currentLesson()){
+    if (stepIndex === 0) return state.chunkIndex >= lesson.chunks.length - 1;
+    if (stepIndex === 1) return state.exampleIndex >= lesson.examples.length - 1;
+    if (stepIndex === 2) return predictionDone(lesson);
+    if (stepIndex === 3) return passedCount(lesson) >= Math.min(2, lesson.exercises.length);
+    if (stepIndex === 4) return reflectionDone(lesson);
+    return false;
+  }
+  function canCompleteLesson(lesson=currentLesson()){
+    return predictionDone(lesson) && passedCount(lesson) >= Math.min(2, lesson.exercises.length) && reflectionDone(lesson);
+  }
+
+  function render(){
+    applyPreferences();
+    renderSidebar();
+    renderMain();
+    renderStats();
+  }
+
+  function renderStats(){
+    $('#xpStat').textContent = state.xp;
+    $('#streakStat').textContent = state.streak;
+    $('#masteryStat').textContent = masteryPercent() + '%';
+    $('#courseMeter').style.width = masteryPercent() + '%';
+  }
+
+  function renderSidebar(){
+    const lesson = currentLesson();
+    const nextText = getNextActionText();
+    $('#resumeBox').innerHTML = `
+      <h2>${escapeHTML(lesson.title)}</h2>
+      <p>${nextText}</p>
+      <div class="meter"><i style="width:${lessonProgress(lesson)}%"></i></div>
+    `;
+    $('#lessonList').innerHTML = lessons.map((l, i) => {
+      const locked = !isLessonUnlocked(i);
+      const done = !!state.completed[l.id];
+      const active = i === state.lessonIndex;
+      return `<button class="lesson-chip ${locked?'locked':''}" ${active?'aria-current="true"':''} data-lesson="${i}" ${locked?'disabled':''}>
+        <span><strong>${i+1}. ${escapeHTML(l.title)}</strong><small>${escapeHTML(l.skill)} · ${l.minutes} دقیقه · ${passedCount(l)}/${l.exercises.length} تمرین</small></span>
+        <span class="chip-status">${done?'✓':locked?'○':'›'}</span>
+      </button>`;
+    }).join('');
+    document.querySelectorAll('[data-lesson]').forEach(btn => btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.lesson);
+      if (!isLessonUnlocked(idx)) return;
+      state.lessonIndex = idx;
+      state.stepIndex = Math.min(state.stepIndex, 4);
+      state.chunkIndex = Math.min(state.chunkIndex, lessons[idx].chunks.length - 1);
+      state.exampleIndex = 0;
+      state.exerciseIndex = 0;
+      saveState(); render(); window.scrollTo({top:0, behavior:'smooth'});
+    }));
+  }
+
+  function lessonProgress(lesson){
+    let score = 0;
+    if (state.chunkIndex >= lesson.chunks.length - 1) score += 20;
+    if (state.exampleIndex >= lesson.examples.length - 1) score += 20;
+    if (predictionDone(lesson)) score += 20;
+    score += Math.min(20, passedCount(lesson) * 10);
+    if (reflectionDone(lesson)) score += 20;
+    if (state.completed[lesson.id]) score = 100;
+    return score;
+  }
+
+  function getNextActionText(){
+    const lesson = currentLesson();
+    if (state.completed[lesson.id]) return 'این درس کامل شده است. می‌توانی درس بعدی را شروع کنی یا برای تثبیت، مرور انجام دهی.';
+    if (state.stepIndex === 0) return 'فقط یک بخش کوتاه از توضیح را بخوان. بعد با دکمه‌ی بعدی ادامه بده.';
+    if (state.stepIndex === 1) return 'یک مثال را نگاه کن، خروجی آن را با کد مقایسه کن، سپس مثال بعدی را ببین.';
+    if (state.stepIndex === 2) return 'قبل از کدنویسی، خروجی کد را حدس بزن. این کار یادگیری را عمیق‌تر می‌کند.';
+    if (state.stepIndex === 3) return 'کد را از صفر بنویس. لازم نیست کامل باشد؛ اجرا کن، نتیجه را ببین، اصلاح کن.';
+    return 'در دو جمله بنویس چه چیزی یاد گرفتی و کجا ممکن است اشتباه کنی.';
+  }
+
+  function renderMain(){
+    const lesson = currentLesson();
+    main.innerHTML = `
+      <div class="hero">
+        <div>
+          <h2>${escapeHTML(lesson.title)}</h2>
+          <p>${escapeHTML(lesson.promise)}</p>
+          <div class="lesson-meta">
+            <span class="tag">مهارت: ${escapeHTML(lesson.skill)}</span>
+            <span class="tag">زمان آرام: ${lesson.minutes} دقیقه</span>
+            <span class="tag">تمرین‌های کامل: ${passedCount(lesson)}/${lesson.exercises.length}</span>
+            ${isLessonDone(lesson) ? '<span class="tag">کامل شده ✓</span>' : ''}
+          </div>
+        </div>
+        <div class="hide-focus"><button class="secondary" id="resetLessonBtn">شروع دوباره این درس</button></div>
+      </div>
+
+      <div class="focus-card">
+        <strong>قدم فعلی</strong>
+        <p>${getNextActionText()}</p>
+      </div>
+
+      ${renderStepper()}
+      <div id="stepContent"></div>
+    `;
+    $('#resetLessonBtn')?.addEventListener('click', resetCurrentLessonView);
+    document.querySelectorAll('[data-step]').forEach(btn => btn.addEventListener('click', () => {
+      const next = Number(btn.dataset.step);
+      const allowed = next <= state.stepIndex || stepIsDone(state.stepIndex, lesson) || state.completed[lesson.id];
+      if (!allowed) return toast('اول قدم فعلی را کامل کن. فقط یک قدم کوچک کافی است.');
+      state.stepIndex = next; saveState(); render();
+    }));
+    const box = $('#stepContent');
+    if (state.stepIndex === 0) box.innerHTML = renderUnderstand(lesson);
+    if (state.stepIndex === 1) box.innerHTML = renderExamples(lesson);
+    if (state.stepIndex === 2) box.innerHTML = renderPredict(lesson);
+    if (state.stepIndex === 3) box.innerHTML = renderPractice(lesson);
+    if (state.stepIndex === 4) box.innerHTML = renderReflect(lesson);
+    bindStepHandlers(lesson);
+  }
+
+  function renderStepper(){
+    return `<div class="stepper" aria-label="learning steps">
+      ${STEPS.map((s,i)=>`<button class="step ${i===state.stepIndex?'active':''} ${stepIsDone(i)?'done':''}" data-step="${i}"><span>${s.icon}</span>${s.label}</button>`).join('')}
+    </div>`;
+  }
+
+  function renderUnderstand(lesson){
+    const shown = lesson.chunks.slice(0, state.chunkIndex + 1);
+    const done = state.chunkIndex >= lesson.chunks.length - 1;
+    return `<div class="content-grid">
+      <section class="card">
+        <h3>توضیح کامل، ولی مرحله‌ای</h3>
+        ${shown.map((c,i)=>`<p class="chunk">${i+1}. ${c}</p>`).join('')}
+        <div class="actions">
+          ${!done ? '<button class="primary" id="moreChunkBtn">نمایش بخش بعدی</button>' : '<button class="primary" id="toExamplesBtn">رفتن به مثال‌ها</button>'}
+          <button class="ghost" id="brainBreakBtn">۳۰ ثانیه مکث</button>
+        </div>
+      </section>
+      <aside class="side-note">
+        <div class="card">
+          <h4>چرا این درس مهم است؟</h4>
+          <p class="small">${escapeHTML(lesson.why)}</p>
+        </div>
+        ${renderChecklist(lesson)}
+      </aside>
+    </div>`;
+  }
+
+  function renderExamples(lesson){
+    const ex = lesson.examples[state.exampleIndex] || lesson.examples[0];
+    return `<div class="content-grid">
+      <section class="card">
+        <div class="example-top">
+          <h3>${escapeHTML(ex.title)}</h3>
+          <div class="progress-dots">${lesson.examples.map((_,i)=>`<span class="dot ${i===state.exampleIndex?'active':''}"></span>`).join('')}</div>
+        </div>
+        <p>${escapeHTML(ex.note)}</p>
+        <pre>${escapeHTML(ex.code)}</pre>
+        <div class="callout success"><strong>خروجی مورد انتظار</strong><pre style="margin-bottom:0">${escapeHTML(ex.output)}</pre></div>
+        <div class="actions">
+          ${state.exampleIndex < lesson.examples.length - 1 ? '<button class="primary" id="nextExampleBtn">مثال بعدی</button>' : '<button class="primary" id="toPredictBtn">رفتن به پیش‌بینی</button>'}
+          ${state.exampleIndex > 0 ? '<button class="secondary" id="prevExampleBtn">مثال قبلی</button>' : ''}
+        </div>
+      </section>
+      <aside class="side-note">
+        <div class="card">
+          <h4>چطور مثال را بخوانم؟</h4>
+          <div class="checklist">
+            <div class="check-item"><i>1</i><span>اول کد را بخوان، هنوز خروجی را حفظ نکن.</span></div>
+            <div class="check-item"><i>2</i><span>از خودت بپرس هر خط چه کاری دارد.</span></div>
+            <div class="check-item"><i>3</i><span>بعد خروجی را نگاه کن و مقایسه کن.</span></div>
+          </div>
+        </div>
+        ${renderChecklist(lesson)}
+      </aside>
+    </div>`;
+  }
+
+  function renderPredict(lesson){
+    const p = lesson.predict;
+    const selected = state.predictions[lesson.id];
+    const locked = typeof selected === 'number';
+    return `<div class="content-grid">
+      <section class="card">
+        <h3>قبل از کدنویسی حدس بزن</h3>
+        <p>این مرحله کوتاه است، اما خیلی مهم است: مغزت قبل از اجرا یک مدل می‌سازد. حتی اگر اشتباه باشد، یادگیری بهتر می‌شود.</p>
+        <pre>${escapeHTML(p.code)}</pre>
+        <div class="choice-grid">
+          ${p.choices.map((choice,i)=>`<button class="choice ${selected===i?'selected':''} ${locked && i===p.answer?'correct':''} ${locked && selected===i && i!==p.answer?'wrong':''}" data-choice="${i}" ${locked?'disabled':''}>${escapeHTML(choice)}</button>`).join('')}
+        </div>
+        ${locked ? `<div class="callout ${selected===p.answer?'success':'warning'}"><strong>${selected===p.answer?'درست بود.':'اشتباه، ولی مفید بود.'}</strong><p>${escapeHTML(p.explain)}</p></div>` : ''}
+        <div class="actions">
+          ${locked ? '<button class="primary" id="toPracticeBtn">رفتن به تمرین خالی</button>' : ''}
+        </div>
+      </section>
+      <aside class="side-note">${renderChecklist(lesson)}</aside>
+    </div>`;
+  }
+
+  function renderPractice(lesson){
+    const ex = lesson.exercises[state.exerciseIndex] || lesson.exercises[0];
+    const key = lesson.id + ':' + ex.id;
+    const code = state.drafts[key] || '';
+    const passed = !!state.passedExercises[key];
+    const hintCount = state.hints[key] || 0;
+    const attempts = state.attempts[key] || 0;
+    return `<div class="practice-layout">
+      <section class="card">
+        <div class="quiet-row">
+          <div>
+            <h3>${escapeHTML(ex.title)}</h3>
+            <p class="muted">${escapeHTML(ex.goal)}</p>
+          </div>
+          <span class="tag">${passed?'کامل ✓':'تمرین خالی'}</span>
+        </div>
+        <textarea id="codeEditor" spellcheck="false" placeholder="# کد تمرین را از صفر اینجا بنویس.\n# مثال‌ها راهنما هستند، اما این قسمت عمداً خالی است.">${escapeHTML(code)}</textarea>
+        <div class="actions">
+          <button class="primary" id="runBtn">اجرای کد و بررسی</button>
+          <button class="secondary" id="hintBtn">راهنمایی کوچک</button>
+          <button class="ghost" id="clearDraftBtn">پاک کردن این تمرین</button>
+        </div>
+        <div id="hintBox" class="callout warning ${hintCount?'':'hidden'}"><strong>راهنمایی ${Math.min(hintCount, ex.hints.length)} از ${ex.hints.length}</strong><p>${escapeHTML(ex.hints[Math.min(hintCount, ex.hints.length)-1] || '')}</p></div>
+        <div id="resultBox" class="callout hidden"></div>
+        <h4 style="margin-top:18px">خروجی برنامه</h4>
+        <div class="output" id="outputBox">هنوز اجرا نشده است.</div>
+        <div class="break-card ${attempts >= 3 && !passed ? 'show':''}" id="breakCard"><strong>مکث پیشنهادی</strong><p class="small">سه بار تلاش کردی. این شکست نیست؛ یعنی مغزت دارد مسئله را پردازش می‌کند. ۳۰ ثانیه بلند شو، شانه‌ها را حرکت بده، بعد فقط یک خط را اصلاح کن.</p></div>
+      </section>
+      <aside class="side-note">
+        <div class="card">
+          <p class="mini-title">تمرین‌های این درس</p>
+          <div class="exercise-tabs">
+            ${lesson.exercises.map((item,i)=>`<button class="exercise-tab ${i===state.exerciseIndex?'active':''}" data-exercise="${i}"><span><strong>${escapeHTML(item.title)}</strong><small>${state.passedExercises[lesson.id+':'+item.id]?'کامل شده':'آماده تمرین'}</small></span><span>${state.passedExercises[lesson.id+':'+item.id]?'✓':'›'}</span></button>`).join('')}
+          </div>
+        </div>
+        <div class="card">
+          <h4>قانون تمرین</h4>
+          <p class="small">این ادیتور عمداً خالی است. هدف این است که مغزت ساختار کد را خودش بسازد. اگر گیر کردی، فقط یک راهنمایی کوچک بگیر؛ جواب کامل نشان داده نمی‌شود.</p>
+        </div>
+        ${renderChecklist(lesson)}
+      </aside>
+    </div>`;
+  }
+
+  function renderReflect(lesson){
+    const value = state.reflections[lesson.id] || '';
+    const ready = canCompleteLesson(lesson);
+    return `<div class="content-grid">
+      <section class="card">
+        <h3>جمع‌بندی کوتاه برای تثبیت</h3>
+        <p>برای کامل شدن درس، دو جمله بنویس: یکی درباره چیزی که فهمیدی، یکی درباره اشتباهی که ممکن است دوباره رخ دهد. این کار مخصوصاً برای ADHD کمک می‌کند یادگیری از حافظه‌ی کوتاه‌مدت به ساختار پایدارتر منتقل شود.</p>
+        <textarea class="reflection-box" id="reflectionBox" placeholder="مثلاً: فهمیدم print برای دیدن خروجی است. ممکن است فراموش کنم متن باید داخل کوتیشن باشد.">${escapeHTML(value)}</textarea>
+        <div class="actions">
+          <button class="primary" id="completeLessonBtn" ${ready?'':'disabled'}>${isLessonDone(lesson)?'درس کامل شده':'کامل کردن درس'}</button>
+          <button class="secondary" id="exportBtn">خروجی گرفتن از پیشرفت</button>
+        </div>
+        ${!ready ? `<div class="callout warning"><strong>هنوز آماده کامل شدن نیست</strong><p>برای تکمیل درس باید پیش‌بینی انجام شود، حداقل دو تمرین پاس شود، و جمع‌بندی حداقل ۲۵ کاراکتر داشته باشد.</p></div>` : `<div class="callout success"><strong>آماده تکمیل است</strong><p>هم تمرین عملی انجام دادی، هم فکر خودت را نوشتنی کردی. این یعنی یادگیری فعال.</p></div>`}
+      </section>
+      <aside class="side-note">
+        ${renderChecklist(lesson)}
+        <div class="card">
+          <h4>بعد از این درس</h4>
+          <p class="small">اگر انرژی داری، درس بعدی را شروع کن. اگر تمرکزت کم شده، همین‌جا توقف کن. پیشرفت ذخیره شده است و دفعه بعد دقیقاً از همین مسیر ادامه می‌دهی.</p>
+        </div>
+      </aside>
+    </div>`;
+  }
+
+  function renderChecklist(lesson){
+    return `<div class="card">
+      <p class="mini-title">چک‌لیست تسلط</p>
+      <div class="checklist">
+        <div class="check-item ${state.chunkIndex >= lesson.chunks.length - 1?'done':''}"><i>${state.chunkIndex >= lesson.chunks.length - 1?'✓':'1'}</i><span>توضیح‌های اصلی را مرحله‌ای خوانده‌ام.</span></div>
+        <div class="check-item ${state.exampleIndex >= lesson.examples.length - 1?'done':''}"><i>${state.exampleIndex >= lesson.examples.length - 1?'✓':'2'}</i><span>مثال‌ها را با خروجی مقایسه کرده‌ام.</span></div>
+        <div class="check-item ${predictionDone(lesson)?'done':''}"><i>${predictionDone(lesson)?'✓':'3'}</i><span>قبل از اجرا، خروجی را پیش‌بینی کرده‌ام.</span></div>
+        <div class="check-item ${passedCount(lesson) >= 2?'done':''}"><i>${passedCount(lesson) >= 2?'✓':'4'}</i><span>حداقل دو تمرین را از صفر نوشته‌ام.</span></div>
+        <div class="check-item ${reflectionDone(lesson)?'done':''}"><i>${reflectionDone(lesson)?'✓':'5'}</i><span>یادگیری و خطای احتمالی را نوشته‌ام.</span></div>
+      </div>
+    </div>`;
+  }
+
+  function bindStepHandlers(lesson){
+    $('#moreChunkBtn')?.addEventListener('click', () => { state.chunkIndex = Math.min(lesson.chunks.length - 1, state.chunkIndex + 1); award(2); saveState(); render(); });
+    $('#toExamplesBtn')?.addEventListener('click', () => { state.stepIndex = 1; state.exampleIndex = 0; award(4); saveState(); render(); });
+    $('#brainBreakBtn')?.addEventListener('click', () => showBreak('استراحت کوتاه', '۳۰ ثانیه به نقطه‌ای دور نگاه کن، یک نفس آرام بکش، و فقط با هدف «قدم بعدی» برگرد.'));
+    $('#nextExampleBtn')?.addEventListener('click', () => { state.exampleIndex = Math.min(lesson.examples.length - 1, state.exampleIndex + 1); award(2); saveState(); render(); });
+    $('#prevExampleBtn')?.addEventListener('click', () => { state.exampleIndex = Math.max(0, state.exampleIndex - 1); saveState(); render(); });
+    $('#toPredictBtn')?.addEventListener('click', () => { state.stepIndex = 2; award(4); saveState(); render(); });
+    document.querySelectorAll('[data-choice]').forEach(btn => btn.addEventListener('click', () => {
+      const choice = Number(btn.dataset.choice);
+      state.predictions[lesson.id] = choice;
+      award(choice === lesson.predict.answer ? 12 : 5);
+      saveState(); render();
+      toast(choice === lesson.predict.answer ? 'پیش‌بینی درست بود.' : 'اشتباه هم بخشی از یادگیری است. توضیح را بخوان و ادامه بده.');
+    }));
+    $('#toPracticeBtn')?.addEventListener('click', () => { state.stepIndex = 3; saveState(); render(); });
+    document.querySelectorAll('[data-exercise]').forEach(btn => btn.addEventListener('click', () => { state.exerciseIndex = Number(btn.dataset.exercise); saveState(); render(); }));
+    const editor = $('#codeEditor');
+    if (editor) {
+      editor.addEventListener('input', () => {
+        const ex = lesson.exercises[state.exerciseIndex];
+        state.drafts[lesson.id + ':' + ex.id] = editor.value;
+        saveState();
+      });
+    }
+    $('#clearDraftBtn')?.addEventListener('click', () => {
+      const ex = lesson.exercises[state.exerciseIndex];
+      delete state.drafts[lesson.id + ':' + ex.id];
+      saveState(); render();
+    });
+    $('#hintBtn')?.addEventListener('click', () => {
+      const ex = lesson.exercises[state.exerciseIndex];
+      const key = lesson.id + ':' + ex.id;
+      state.hints[key] = Math.min((state.hints[key] || 0) + 1, ex.hints.length);
+      award(0); saveState(); render();
+      if (state.hints[key] >= 2) toast('راهنمایی گرفتی؛ حالا فقط یک خط را اصلاح کن، نه کل برنامه را.');
+    });
+    $('#runBtn')?.addEventListener('click', () => runCurrentExercise(lesson));
+    $('#reflectionBox')?.addEventListener('input', e => { state.reflections[lesson.id] = e.target.value; saveState(); renderSidebar(); renderStats(); });
+    $('#completeLessonBtn')?.addEventListener('click', () => completeCurrentLesson(lesson));
+    $('#exportBtn')?.addEventListener('click', exportProgress);
+  }
+
+  function resetCurrentLessonView(){
+    const lesson = currentLesson();
+    state.stepIndex = 0;
+    state.chunkIndex = 0;
+    state.exampleIndex = 0;
+    state.exerciseIndex = 0;
+    delete state.predictions[lesson.id];
+    saveState(); render();
+    toast('نمایش درس از اول شروع شد. تمرین‌های پاس‌شده پاک نشدند.');
+  }
+
+  function goNextSmart(){
+    const lesson = currentLesson();
+    if (state.completed[lesson.id]) {
+      const next = Math.min(lessons.length - 1, state.lessonIndex + 1);
+      if (next !== state.lessonIndex && isLessonUnlocked(next)) {
+        state.lessonIndex = next; state.stepIndex = 0; state.chunkIndex = 0; state.exampleIndex = 0; state.exerciseIndex = 0;
+        saveState(); render(); return;
+      }
+      toast('همه درس‌های باز فعلی کامل شده‌اند.'); return;
+    }
+    if (state.stepIndex === 0) {
+      if (state.chunkIndex < lesson.chunks.length - 1) state.chunkIndex += 1; else state.stepIndex = 1;
+    } else if (state.stepIndex === 1) {
+      if (state.exampleIndex < lesson.examples.length - 1) state.exampleIndex += 1; else state.stepIndex = 2;
+    } else if (state.stepIndex === 2) {
+      if (!predictionDone(lesson)) return toast('اول یک پیش‌بینی انتخاب کن.');
+      state.stepIndex = 3;
+    } else if (state.stepIndex === 3) {
+      if (passedCount(lesson) < 2) return toast('برای تسلط، حداقل دو تمرین را از صفر پاس کن.');
+      state.stepIndex = 4;
+    } else if (state.stepIndex === 4) {
+      if (!canCompleteLesson(lesson)) return toast('جمع‌بندی را کامل کن و مطمئن شو حداقل دو تمرین پاس شده است.');
+      completeCurrentLesson(lesson); return;
+    }
+    saveState(); render();
+  }
+
+  function completeCurrentLesson(lesson){
+    if (!canCompleteLesson(lesson)) { toast('هنوز شرایط تسلط کامل نشده است.'); return; }
+    if (!state.completed[lesson.id]) {
+      state.completed[lesson.id] = true;
+      award(35);
+      showBreak('درس کامل شد', 'عالی بود. برای مغز ADHD، توقف بعد از یک موفقیت کوچک هم یک تصمیم هوشمندانه است. اگر ادامه می‌دهی، فقط قدم اول درس بعدی را انجام بده.');
+    }
+    const next = state.lessonIndex + 1;
+    if (next < lessons.length) {
+      state.lessonIndex = next;
+      state.stepIndex = 0;
+      state.chunkIndex = 0;
+      state.exampleIndex = 0;
+      state.exerciseIndex = 0;
+    }
+    saveState(); render();
+  }
+
+  function award(points){
+    if (!points) return;
+    state.xp += points;
+    saveState();
+  }
+
+  async function runCurrentExercise(lesson){
+    const ex = lesson.exercises[state.exerciseIndex];
+    const key = lesson.id + ':' + ex.id;
+    const code = ($('#codeEditor')?.value || '').trim();
+    const out = $('#outputBox');
+    const res = $('#resultBox');
+    if (!code) {
+      res.className = 'callout warning';
+      res.innerHTML = '<strong>ادیتور خالی است</strong><p>این تمرین عمداً آماده نشده است. با یک خط کوچک شروع کن.</p>';
+      return;
+    }
+    state.drafts[key] = code;
+    state.attempts[key] = (state.attempts[key] || 0) + 1;
+    state.pyRuns += 1;
+    saveState();
+    out.textContent = 'در حال اجرای پایتون... اجرای اول ممکن است کمی طول بکشد.';
+    res.className = 'callout hidden';
+    try {
+      const result = await runPython(code);
+      const stdout = normalizeOutput(result.output || '');
+      out.textContent = result.output || '(بدون خروجی)';
+      if (!result.ok) {
+        res.className = 'callout error';
+        res.innerHTML = `<strong>کد اجرا نشد</strong><p>${escapeHTML(friendlyError(result.error || 'خطای نامشخص'))}</p>`;
+        maybeShowBreak(key);
+        return;
+      }
+      const check = validateExercise(ex, code, stdout);
+      if (check.ok) {
+        if (!state.passedExercises[key]) award(18);
+        state.passedExercises[key] = true;
+        saveState();
+        res.className = 'callout success';
+        res.innerHTML = `<strong>تمرین پاس شد</strong><p>${escapeHTML(check.message)}</p>`;
+        toast('تمرین کامل شد. حالا یکی دیگر را از صفر امتحان کن.');
+        if (passedCount(lesson) >= 2) setTimeout(() => { state.stepIndex = 4; saveState(); render(); }, 700);
+        else renderSidebar(), renderStats();
+      } else {
+        res.className = 'callout warning';
+        res.innerHTML = `<strong>نزدیک شدی</strong><p>${escapeHTML(check.message)}</p>`;
+        maybeShowBreak(key);
+      }
+    } catch(err) {
+      out.textContent = '';
+      res.className = 'callout error';
+      res.innerHTML = `<strong>مشکل در اجرای پایتون</strong><p>${escapeHTML(err.message || String(err))}</p>`;
+    }
+  }
+
+  function validateExercise(ex, code, stdout){
+    for (const c of ex.checks) {
+      if (c.type === 'output' && normalizeOutput(stdout) !== normalizeOutput(c.value)) {
+        return {ok:false, message:`خروجی هنوز دقیق نیست. خروجی مورد انتظار:\n${c.value}\n\nخروجی فعلی:\n${stdout || '(بدون خروجی)'}`};
+      }
+      if (c.type === 'contains' && !code.includes(c.value)) {
+        return {ok:false, message:`کد اجرا شد، اما باید از ${c.value} هم استفاده کنی تا هدف آموزشی تمرین کامل شود.`};
+      }
+    }
+    return {ok:true, message:'خروجی درست است و ساختار خواسته‌شده هم در کد دیده شد.'};
+  }
+
+  function normalizeOutput(v){ return String(v || '').replace(/\r/g,'').trim(); }
+
+  function friendlyError(error){
+    const e = String(error);
+    if (/SyntaxError/.test(e)) return 'یک مشکل نوشتاری در کد هست. پرانتز، کوتیشن، دو نقطه بعد از if/for/def، یا ترتیب کلمات را بررسی کن.';
+    if (/IndentationError/.test(e)) return 'تورفتگی خط‌ها درست نیست. خط‌های داخل if، for یا def باید چند فاصله جلوتر باشند.';
+    if (/NameError/.test(e)) return 'پایتون نامی را نمی‌شناسد. احتمالاً نام متغیر را نساخته‌ای یا املای آن در دو جا فرق دارد.';
+    if (/TypeError/.test(e)) return 'نوع داده‌ها با هم سازگار نیستند. شاید متن و عدد را بدون تبدیل مناسب با هم ترکیب کرده‌ای.';
+    if (/ZeroDivisionError/.test(e)) return 'برنامه تلاش کرده عددی را بر صفر تقسیم کند.';
+    if (/Timeout/.test(e)) return 'اجرای برنامه خیلی طولانی شد. شاید حلقه بی‌نهایت ساخته شده باشد.';
+    return e.split('\n').slice(-3).join('\n');
+  }
+
+  function maybeShowBreak(key){
+    if ((state.attempts[key] || 0) === 3) showBreak('مکث بهتر از فشار است', 'سه تلاش یعنی مغزت اطلاعات زیادی پردازش کرده. یک مکث ۳۰ ثانیه‌ای کمک می‌کند خطا را واضح‌تر ببینی. بعد فقط یک چیز را تغییر بده.');
+  }
+
+  function showBreak(title, text){
+    $('#modalTitle').textContent = title;
+    $('#modalText').textContent = text;
+    $('#modalBackdrop').classList.add('show');
+  }
+
+  function exportProgress(){
+    const data = JSON.stringify({ exportedAt: new Date().toISOString(), app:'Python Focus ADHD', state }, null, 2);
+    const blob = new Blob([data], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'python-focus-progress.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 500);
+  }
+
+  function toast(msg){
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3600);
+  }
+
+  function escapeHTML(str){
+    return String(str ?? '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  }
+
+  function initPyodideWorker(){
+    if (pyWorker) pyWorker.terminate();
+    pyReady = false;
+    const workerCode = `
+      let pyodide = null;
+      async function boot(){
+        importScripts('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js');
+        pyodide = await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'});
+        self.postMessage({type:'ready'});
+      }
+      boot().catch(err => self.postMessage({type:'boot-error', error:String(err)}));
+      self.onmessage = async (event) => {
+        const {id, code} = event.data;
+        if (!pyodide) { self.postMessage({id, ok:false, error:'Python هنوز آماده نیست. چند ثانیه بعد دوباره اجرا کن.'}); return; }
+        let stdout = [];
+        let stderr = [];
+        try {
+          pyodide.setStdout({batched: s => stdout.push(s)});
+          pyodide.setStderr({batched: s => stderr.push(s)});
+          await pyodide.runPythonAsync(code);
+          self.postMessage({id, ok:true, output:stdout.join('\\n'), error:stderr.join('\\n')});
+        } catch(err) {
+          self.postMessage({id, ok:false, output:stdout.join('\\n'), error:String(err)});
+        }
+      };
+    `;
+    const blob = new Blob([workerCode], {type:'application/javascript'});
+    pyWorker = new Worker(URL.createObjectURL(blob));
+    pyWorker.onmessage = (event) => {
+      const data = event.data;
+      if (data.type === 'ready') { pyReady = true; return; }
+      if (data.type === 'boot-error') { toast('Pyodide آماده نشد. اتصال اینترنت را بررسی کن.'); return; }
+      const pending = pyPending.get(data.id);
+      if (!pending) return;
+      clearTimeout(pending.timer);
+      pyPending.delete(data.id);
+      pending.resolve(data);
+    };
+  }
+
+  function runPython(code){
+    return new Promise((resolve, reject) => {
+      if (!pyWorker) initPyodideWorker();
+      const id = ++pySeq;
+      const timeout = pyReady ? 7000 : 30000;
+      const timer = setTimeout(() => {
+        pyPending.delete(id);
+        initPyodideWorker();
+        resolve({ok:false, output:'', error:'Timeout: اجرای برنامه متوقف شد.'});
+      }, timeout);
+      pyPending.set(id, {resolve, reject, timer});
+      pyWorker.postMessage({id, code});
+    });
+  }
+})();
+</script>
+</body>
+</html>
