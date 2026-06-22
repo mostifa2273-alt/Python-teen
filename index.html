@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f5f5f7" />
+  <title>Python Studio — آموزش پایتون برای نوجوانان</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.78);
+      --surface-strong:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --soft:#e8e8ed;
+      --line:rgba(0,0,0,.10);
+      --blue:#0071e3;
+      --blue-soft:#e8f2ff;
+      --green:#138a43;
+      --red:#b42318;
+      --orange:#b96000;
+      --shadow:0 20px 60px rgba(0,0,0,.08);
+      --radius:28px;
+      --mono:"SFMono-Regular","Cascadia Code","Roboto Mono",ui-monospace,monospace;
+      --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans Arabic","Noto Sans",sans-serif;
+    }
+    [data-theme="dark"]{
+      --bg:#000;
+      --surface:rgba(28,28,30,.76);
+      --surface-strong:#1c1c1e;
+      --text:#f5f5f7;
+      --muted:#a1a1a6;
+      --soft:#2c2c2e;
+      --line:rgba(255,255,255,.14);
+      --blue:#0a84ff;
+      --blue-soft:rgba(10,132,255,.16);
+      --green:#30d158;
+      --red:#ff453a;
+      --orange:#ff9f0a;
+      --shadow:0 24px 70px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(circle at top left, rgba(0,113,227,.10), transparent 34rem),
+        radial-gradient(circle at bottom right, rgba(52,199,89,.07), transparent 30rem),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      line-height:1.8;
+    }
+    body.calm{background:var(--bg)}
+    button,textarea,input,select{font:inherit;color:inherit}
+    button{cursor:pointer;border:0;background:none}
+    a{color:inherit}
+    .app{max-width:1220px;margin:0 auto;padding:24px 18px 42px}
+    .topbar{
+      position:sticky;top:0;z-index:20;
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      padding:14px 0 18px;
+      backdrop-filter:saturate(180%) blur(18px);
+      -webkit-backdrop-filter:saturate(180%) blur(18px);
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      display:grid;place-items:center;
+      background:linear-gradient(145deg,var(--text),#555);
+      color:var(--bg);font-weight:800;letter-spacing:-.04em;
+      box-shadow:0 10px 24px rgba(0,0,0,.18)
+    }
+    .brand h1{font-size:19px;margin:0;letter-spacing:-.03em;line-height:1.2}
+    .brand p{margin:2px 0 0;font-size:13px;color:var(--muted);line-height:1.3}
+    .top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .pill,.icon-btn,.primary,.secondary,.ghost{
+      border-radius:999px;border:1px solid var(--line);background:var(--surface);
+      min-height:42px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      transition:.18s ease;white-space:nowrap;box-shadow:0 1px 0 rgba(255,255,255,.2) inset;
+    }
+    .icon-btn{width:42px;padding:0}
+    .primary{background:var(--blue);color:white;border-color:transparent;font-weight:700}
+    .secondary{background:var(--surface-strong);font-weight:700}
+    .ghost{background:transparent;color:var(--muted)}
+    .primary:hover,.secondary:hover,.ghost:hover,.icon-btn:hover,.pill:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,0,0,.08)}
+    .primary:disabled,.secondary:disabled,.ghost:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+    .grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:20px;align-items:start}
+    .side{position:sticky;top:84px;display:flex;flex-direction:column;gap:14px}
+    .focus .side{display:none}
+    .focus .grid{grid-template-columns:1fr;max-width:880px;margin:0 auto}
+    .card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:saturate(180%) blur(18px);
+      -webkit-backdrop-filter:saturate(180%) blur(18px);
+    }
+    .panel{padding:22px}
+    .course-title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .course-title h2,.section-title h2{font-size:17px;margin:0;letter-spacing:-.02em;line-height:1.35}
+    .course-title p,.section-title p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .stat{background:var(--surface-strong);border:1px solid var(--line);border-radius:18px;padding:12px;text-align:center}
+    .stat b{display:block;font-size:17px;line-height:1.2}
+    .stat span{font-size:12px;color:var(--muted)}
+    .progress-wrap{margin-top:16px;background:var(--soft);height:10px;border-radius:999px;overflow:hidden}
+    .progress-fill{height:100%;background:var(--blue);border-radius:999px;transition:width .25s ease}
+    .lesson-list{display:flex;flex-direction:column;gap:8px;max-height:54vh;overflow:auto;padding-inline-end:3px}
+    .lesson-item{
+      width:100%;text-align:right;display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;
+      padding:12px;border-radius:20px;border:1px solid transparent;color:var(--text)
+    }
+    .lesson-item:hover{background:var(--surface-strong);border-color:var(--line)}
+    .lesson-item.active{background:var(--blue-soft);border-color:rgba(0,113,227,.22)}
+    .lesson-item.locked{opacity:.48}
+    .num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--soft);font-size:13px;font-weight:800;color:var(--muted)}
+    .lesson-item.done .num{background:rgba(19,138,67,.12);color:var(--green)}
+    .lesson-text{min-width:0}
+    .lesson-text strong{display:block;font-size:14px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .lesson-text span{display:block;color:var(--muted);font-size:12px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tag{font-size:11px;border:1px solid var(--line);color:var(--muted);padding:3px 8px;border-radius:999px;background:var(--surface-strong)}
+    .main{display:flex;flex-direction:column;gap:18px;min-width:0}
+    .hero{padding:28px;overflow:hidden;position:relative}
+    .hero:before{content:"";position:absolute;inset:auto -80px -150px auto;width:310px;height:310px;border-radius:50%;background:rgba(0,113,227,.09);filter:blur(4px)}
+    body.calm .hero:before{display:none}
+    .hero-content{position:relative;z-index:1}
+    .eyebrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-bottom:10px}
+    .hero h2{font-size:42px;line-height:1.08;letter-spacing:-.055em;margin:0 0 12px;max-width:760px}
+    .hero p{font-size:18px;color:var(--muted);margin:0;max-width:760px;line-height:1.8}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+    .step-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:8px}
+    .step{
+      border-radius:20px;padding:12px 10px;text-align:center;color:var(--muted);font-size:12px;border:1px solid transparent;
+      background:transparent;line-height:1.35
+    }
+    .step b{display:block;color:inherit;font-size:13px;margin-bottom:2px}
+    .step.active{background:var(--surface-strong);border-color:var(--line);color:var(--blue);box-shadow:0 8px 20px rgba(0,0,0,.05)}
+    .step.done{color:var(--green)}
+    .next-card{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .next-card h3{margin:0;font-size:16px;line-height:1.35}
+    .next-card p{margin:4px 0 0;color:var(--muted);font-size:14px;line-height:1.6}
+    .section{padding:28px}
+    .section-title{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}
+    .section-title h2{font-size:28px;letter-spacing:-.04em}
+    .content-box{background:var(--surface-strong);border:1px solid var(--line);border-radius:24px;padding:22px}
+    .lesson-chunk h3{font-size:23px;margin:0 0 10px;letter-spacing:-.03em}
+    .lesson-chunk p{margin:0;color:var(--text);font-size:17px;line-height:2.05}
+    .why-box{border-radius:22px;background:var(--blue-soft);padding:18px;margin-top:18px;color:var(--text);border:1px solid rgba(0,113,227,.18)}
+    .why-box b{display:block;margin-bottom:5px}
+    .nav-row{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+    .dots{display:flex;gap:6px;align-items:center}
+    .dot{width:7px;height:7px;border-radius:50%;background:var(--soft)}
+    .dot.active{background:var(--blue);width:22px;border-radius:999px}
+    .code{
+      direction:ltr;text-align:left;white-space:pre-wrap;
+      font-family:var(--mono);font-size:14px;line-height:1.7;
+      background:#111114;color:#f5f5f7;border-radius:18px;padding:18px;overflow:auto;border:1px solid rgba(255,255,255,.08)
+    }
+    .example-grid{display:grid;grid-template-columns:1fr;gap:14px}
+    .example-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+    .example-head h3{margin:0;font-size:19px;letter-spacing:-.02em}
+    .output{direction:ltr;text-align:left;white-space:pre-wrap;font-family:var(--mono);font-size:13px;background:var(--soft);border-radius:16px;padding:14px;margin-top:10px;border:1px solid var(--line)}
+    .explain{color:var(--muted);margin:12px 0 0;font-size:15px;line-height:1.75}
+    .choice-list{display:grid;gap:10px;margin-top:16px}
+    .choice{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:18px;background:var(--surface-strong);padding:14px;text-align:right;width:100%}
+    .choice:hover{border-color:rgba(0,113,227,.35);background:var(--blue-soft)}
+    .choice.selected{border-color:var(--blue);background:var(--blue-soft)}
+    .choice.ok{border-color:rgba(19,138,67,.35);background:rgba(19,138,67,.10)}
+    .choice.bad{border-color:rgba(180,35,24,.35);background:rgba(180,35,24,.10)}
+    .workspace{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+    .task-list{display:grid;gap:8px;margin:12px 0 0;padding:0;list-style:none}
+    .task-list li{position:relative;padding:9px 12px;border-radius:14px;background:var(--surface-strong);border:1px solid var(--line);font-size:14px;color:var(--muted)}
+    textarea.editor{
+      direction:ltr;text-align:left;resize:vertical;min-height:260px;width:100%;
+      background:#111114;color:#f5f5f7;border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;padding:18px;font-family:var(--mono);font-size:14px;line-height:1.7;outline:none;
+      box-shadow:0 14px 40px rgba(0,0,0,.18)
+    }
+    textarea.editor:focus{border-color:rgba(10,132,255,.8);box-shadow:0 0 0 4px rgba(10,132,255,.18),0 14px 40px rgba(0,0,0,.18)}
+    .empty-note{font-size:13px;color:var(--muted);margin:8px 0 0;line-height:1.55}
+    .result{margin-top:12px;border-radius:18px;border:1px solid var(--line);background:var(--surface-strong);padding:14px;min-height:54px}
+    .result.ok{border-color:rgba(19,138,67,.35);background:rgba(19,138,67,.08)}
+    .result.bad{border-color:rgba(180,35,24,.35);background:rgba(180,35,24,.08)}
+    .result .label{font-weight:800;margin-bottom:4px}
+    .result pre{direction:ltr;text-align:left;white-space:pre-wrap;margin:8px 0 0;font-family:var(--mono);font-size:13px;line-height:1.6}
+    .side-mini{display:flex;flex-direction:column;gap:12px}
+    .mini-card{background:var(--surface-strong);border:1px solid var(--line);border-radius:22px;padding:16px}
+    .mini-card h3{margin:0 0 8px;font-size:16px;line-height:1.35}
+    .mini-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.65}
+    .check-row{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;margin-top:9px}
+    .check-row.done{color:var(--green);font-weight:700}
+    .hint{border-radius:16px;background:var(--blue-soft);padding:12px;font-size:14px;line-height:1.7;margin-top:10px;border:1px solid rgba(0,113,227,.14)}
+    .exercise-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    .exercise-tab{border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--muted);background:var(--surface-strong);font-size:13px}
+    .exercise-tab.active{background:var(--blue);color:#fff;border-color:transparent}
+    .exercise-tab.done{color:var(--green);border-color:rgba(19,138,67,.25)}
+    .reflection{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);background:var(--surface-strong);border-radius:20px;padding:16px;outline:none;line-height:1.8}
+    .reflection:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,113,227,.13)}
+    .project-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .project-card{background:var(--surface-strong);border:1px solid var(--line);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:10px}
+    .project-card h3{margin:0;font-size:17px;line-height:1.35}
+    .project-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
+    .toast{position:fixed;bottom:18px;left:18px;z-index:80;max-width:360px;background:var(--surface-strong);border:1px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);display:none;color:var(--text)}
+    .toast.show{display:block;animation:rise .2s ease}
+    @keyframes rise{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:60;display:none;align-items:center;justify-content:center;padding:18px}
+    .modal-backdrop.show{display:flex}
+    .modal{max-width:560px;width:100%;background:var(--surface-strong);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:24px}
+    .modal h2{margin:0 0 10px;font-size:24px;letter-spacing:-.04em}
+    .modal p{margin:0 0 16px;color:var(--muted);line-height:1.8}
+    .kbd{font-family:var(--mono);font-size:12px;background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:2px 6px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .muted{color:var(--muted)}
+    .danger{color:var(--red)}
+    .success{color:var(--green)}
+    .split-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    @media (max-width: 940px){
+      .grid{grid-template-columns:1fr}.side{position:static;order:2}.main{order:1}.lesson-list{max-height:none}.workspace{grid-template-columns:1fr}.project-grid{grid-template-columns:1fr}.hero h2{font-size:34px}.step-strip{grid-template-columns:1fr 1fr 1fr}.topbar{align-items:flex-start}.brand p{display:none}
+    }
+    @media (max-width: 620px){
+      .app{padding:14px 12px 30px}.hero,.section{padding:20px}.hero h2{font-size:29px}.hero p{font-size:16px}.top-actions .pill{display:none}.step-strip{grid-template-columns:1fr}.next-card{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:1fr 1fr 1fr}.brand h1{font-size:16px}.logo{width:38px;height:38px}.section-title{flex-direction:column}.section-title h2{font-size:24px}.workspace{gap:12px}textarea.editor{min-height:240px}.panel{padding:18px}.topbar{position:static}.toast{left:12px;right:12px;max-width:none}
+    }
+    @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <script id="curriculum-data" type="application/json">[{"id":"print-output","unit":"شروع برنامه‌نویسی","title":"چاپ کردن و دیدن نتیجه","subtitle":"اولین مهارت: به کامپیوتر بگو چیزی را روی صفحه نشان دهد.","skill":"خروجی گرفتن","why":"تقریباً هر برنامه‌ای باید با کاربر حرف بزند: پیام خوش‌آمد، نتیجه یک محاسبه، امتیاز بازی یا گزارش یک خطا. print ساده‌ترین راه برای دیدن نتیجه فکر خودت در پایتون است.","chunks":[{"heading":"ایده اصلی","body":"برنامه‌نویسی یعنی نوشتن دستورهایی که کامپیوتر آن‌ها را به ترتیب اجرا می‌کند. در پایتون، دستور print برای نمایش متن، عدد یا نتیجه یک محاسبه استفاده می‌شود. وقتی چیزی را داخل پرانتز print می‌گذاری، پایتون آن را محاسبه یا آماده می‌کند و بعد در خروجی نشان می‌دهد."},{"heading":"متن باید داخل نقل‌قول باشد","body":"اگر می‌خواهی یک جمله یا کلمه را چاپ کنی، باید آن را بین نقل‌قول بگذاری. نقل‌قول به پایتون می‌گوید: این یک متن معمولی است، نه نام یک متغیر یا دستور. هر دو نوع نقل‌قول تک '...' و دوتایی \"...\" قابل استفاده‌اند، فقط باید ابتدا و انتهای متن مثل هم باشند."},{"heading":"عددها بدون نقل‌قول هم کار می‌کنند","body":"عددها را می‌توان مستقیم داخل print نوشت. اگر داخل print یک محاسبه مثل 7 + 5 بنویسی، پایتون اول محاسبه را انجام می‌دهد و بعد نتیجه را چاپ می‌کند. این موضوع خیلی مهم است، چون از همین جا وارد دنیای برنامه‌هایی می‌شوی که فقط متن ثابت نشان نمی‌دهند، بلکه نتیجه تولید می‌کنند."},{"heading":"اشتباه رایج","body":"اگر یک نقل‌قول را باز کنی ولی نبندی، یا پرانتز را فراموش کنی، پایتون پیام خطا می‌دهد. پیام‌های خطا دشمن نیستند؛ آن‌ها راهنمایی هستند که می‌گویند کجا شکل دستور درست نیست."}],"examples":[{"title":"پیام ساده","code":"print(\"سلام، من دارم پایتون یاد می‌گیرم.\")","output":"سلام، من دارم پایتون یاد می‌گیرم.","explain":"متن داخل نقل‌قول دقیقاً همان‌طور که نوشته شده نمایش داده می‌شود."},{"title":"چند خط خروجی","code":"print(\"شروع\")\nprint(\"در حال یادگیری\")\nprint(\"پایان\")","output":"شروع\nدر حال یادگیری\nپایان","explain":"هر print یک خط جدید در خروجی می‌سازد."},{"title":"چاپ نتیجه محاسبه","code":"print(8 + 4)\nprint(10 * 3)","output":"12\n30","explain":"پایتون اول محاسبه را انجام می‌دهد و بعد نتیجه را چاپ می‌کند."}],"predict":{"code":"print(\"Python\")\nprint(3 + 4)","question":"خروجی این کد چیست؟","options":["Python و بعد 7","Python و بعد 3 + 4","فقط Python","خطا می‌دهد"],"answer":0,"explain":"خط اول متن را چاپ می‌کند. خط دوم جمع 3 و 4 را حساب می‌کند و 7 را نشان می‌دهد."},"exercises":[{"id":"p1","title":"معرفی کوتاه","brief":"دو خط خروجی بساز: خط اول نام خودت یا یک نام خیالی، خط دوم جمله «من پایتون را شروع کردم». کد را از صفر بنویس.","requirements":["حداقل دو بار از print استفاده کن.","خروجی باید شامل جمله «من پایتون را شروع کردم» باشد."],"checks":{"includes":["من پایتون را شروع کردم"],"mustContain":["print("]},"hints":["برای هر خط جداگانه یک print بنویس.","متن فارسی را داخل نقل‌قول قرار بده.","نمونه شکل دستور: print(\"متن من\")"]},{"id":"p2","title":"محاسبه امتیاز","brief":"امتیاز یک بازی را چاپ کن: اول عدد 50 را با 25 جمع کن و نتیجه را چاپ کن. بعد جمله «امتیاز نهایی آماده است» را چاپ کن.","requirements":["محاسبه باید در کد دیده شود، نه فقط عدد نهایی.","خروجی باید شامل 75 و جمله خواسته‌شده باشد."],"checks":{"includes":["75","امتیاز نهایی آماده است"],"mustContain":["50","25","+"]},"hints":["داخل print می‌توانی محاسبه بنویسی.","برای جمله، نقل‌قول لازم است.","دو خط print کافی است."]},{"id":"p3","title":"تابلوی کوچک برنامه","brief":"سه خط خروجی بساز: نام برنامه، نسخه 1، و جمله «آماده اجرا». ظاهر خروجی باید مثل یک تابلوی شروع باشد.","requirements":["سه خط جدا داشته باش.","عبارت «آماده اجرا» باید در خروجی باشد."],"checks":{"includes":["آماده اجرا","1"],"mustContain":["print("]},"hints":["سه دستور print پشت سر هم بنویس.","برای نسخه می‌توانی عدد 1 یا متن \"نسخه 1\" چاپ کنی."]}],"project":{"title":"کارت معرفی برنامه","brief":"یک کارت معرفی سه‌خطی برای یک اپ خیالی بساز: نام اپ، کاری که انجام می‌دهد، و یک پیام شروع.","steps":["یک نام برای اپ انتخاب کن.","یک جمله درباره کاربرد اپ بنویس.","یک پیام شروع کوتاه چاپ کن."],"checks":{"includes":["شروع"],"mustContain":["print("]},"hints":["هر بخش کارت را با print جداگانه چاپ کن.","خروجی باید تمیز و خواندنی باشد."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]},{"id":"variables-strings","unit":"داده و حافظه","title":"متغیرها و متن‌ها","subtitle":"نام‌گذاری اطلاعات تا برنامه بتواند آن‌ها را دوباره استفاده کند.","skill":"متغیر و رشته","why":"اگر برنامه فقط بتواند چیزهای ثابت چاپ کند، خیلی زود محدود می‌شود. متغیرها به برنامه حافظه می‌دهند: نام، امتیاز، سطح، پیام، رنگ انتخابی یا هر چیز دیگری را ذخیره می‌کنند.","chunks":[{"heading":"متغیر یعنی برچسب روی یک مقدار","body":"متغیر یک نام است که به یک مقدار اشاره می‌کند. وقتی می‌نویسی name = \"Sara\"، پایتون مقدار Sara را با نام name نگه می‌دارد. بعداً هرجا name را بنویسی، پایتون مقدار ذخیره‌شده را استفاده می‌کند."},{"heading":"چرا متغیر مهم است؟","body":"متغیر باعث می‌شود برنامه قابل تغییر، قابل خواندن و قابل توسعه باشد. به جای اینکه یک نام را ده بار در کد تکرار کنی، یک بار آن را در متغیر ذخیره می‌کنی و هرجا لازم بود از همان نام استفاده می‌کنی."},{"heading":"رشته یا string چیست؟","body":"رشته همان متن است. در پایتون متن داخل نقل‌قول نوشته می‌شود. می‌توانی رشته‌ها را با + به هم بچسبانی. به این کار ترکیب متن یا concatenation می‌گویند."},{"heading":"نام‌گذاری خوب","body":"نام متغیر باید معنی‌دار باشد. player_name از x بهتر است، چون وقتی بعداً کد را می‌خوانی، سریع می‌فهمی این مقدار مربوط به نام بازیکن است. نام خوب یعنی کدی که خودش توضیح می‌دهد."}],"examples":[{"title":"ذخیره نام","code":"name = \"Sara\"\nprint(name)","output":"Sara","explain":"name یک برچسب برای متن Sara است. print مقدار داخل متغیر را چاپ می‌کند."},{"title":"ساخت پیام با متغیر","code":"player = \"Nima\"\nmessage = \"Welcome, \" + player\nprint(message)","output":"Welcome, Nima","explain":"دو رشته با + به هم چسبیده‌اند و پیام نهایی ساخته شده است."},{"title":"تغییر مقدار","code":"level = \"Beginner\"\nprint(level)\nlevel = \"Junior Coder\"\nprint(level)","output":"Beginner\nJunior Coder","explain":"متغیر می‌تواند مقدار جدید بگیرد. از لحظه تغییر، مقدار جدید استفاده می‌شود."}],"predict":{"code":"city = \"Baku\"\nprint(\"I live in \" + city)","question":"خروجی چیست؟","options":["I live in Baku","I live in city","Baku I live in","خطا می‌دهد"],"answer":0,"explain":"city مقدار Baku را نگه می‌دارد و با متن قبل از آن ترکیب می‌شود."},"exercises":[{"id":"v1","title":"پیام خوش‌آمد شخصی","brief":"یک متغیر به نام name بساز و داخل آن یک نام قرار بده. سپس پیام «سلام، ...» را با استفاده از همان متغیر چاپ کن.","requirements":["باید متغیر name وجود داشته باشد.","خروجی باید شامل «سلام» باشد.","از متغیر در print استفاده کن، نه اینکه کل جمله را ثابت بنویسی."],"checks":{"includes":["سلام"],"mustContain":["name","="]},"hints":["اول name = \"...\" بنویس.","برای ترکیب متن می‌توانی از + استفاده کنی.","مثلاً print(\"سلام، \" + name)"]},{"id":"v2","title":"کارت بازیکن","brief":"متغیرهای player و rank بساز. سپس یک جمله چاپ کن که نام بازیکن و رتبه او را نشان دهد.","requirements":["دو متغیر player و rank باید در کد باشند.","خروجی باید شامل نام و رتبه باشد.","جمله باید خواندنی باشد."],"checks":{"includes":[],"mustContain":["player","rank","="]},"hints":["هر مقدار متنی باید داخل نقل‌قول باشد.","می‌توانی چند بخش متن را با + ترکیب کنی.","از print برای نمایش جمله نهایی استفاده کن."]},{"id":"v3","title":"تغییر وضعیت","brief":"یک متغیر status بساز، اول مقدار «در حال شروع» را چاپ کن، بعد مقدار آن را به «آماده» تغییر بده و دوباره چاپ کن.","requirements":["status باید حداقل دو بار مقدار بگیرد.","خروجی باید شامل «آماده» باشد."],"checks":{"includes":["آماده"],"mustContain":["status","="]},"hints":["یک متغیر می‌تواند مقدار جدید بگیرد.","بعد از تغییر مقدار، دوباره print(status) بنویس."]}],"project":{"title":"پروفایل کاربر","brief":"یک پروفایل کوچک بساز که نام، علاقه و هدف یادگیری کاربر را چاپ کند. همه اطلاعات باید اول در متغیر ذخیره شوند.","steps":["سه متغیر name، interest و goal بساز.","برای هرکدام یک مقدار متنی قرار بده.","سه جمله خواندنی با استفاده از متغیرها چاپ کن."],"checks":{"includes":[],"mustContain":["name","interest","goal","print("]},"hints":["هر خط خروجی را با یک print جدا بساز.","از + برای چسباندن متن و متغیر استفاده کن."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]},{"id":"numbers-math","unit":"داده و محاسبه","title":"عددها و محاسبه‌ها","subtitle":"برنامه‌هایی بساز که واقعاً حساب می‌کنند.","skill":"عدد و عملگر","why":"بازی‌ها، فروشگاه‌ها، ربات‌ها و اپ‌های آموزشی همه با عدد کار می‌کنند: امتیاز، زمان، فاصله، قیمت، سرعت، درصد و میانگین. اگر عددها را خوب بفهمی، می‌توانی برنامه‌های کاربردی‌تر بسازی.","chunks":[{"heading":"عدد صحیح و عدد اعشاری","body":"در پایتون عدد صحیح مثل 12 یا 250 با نوع int شناخته می‌شود. عدد اعشاری مثل 3.5 یا 0.75 با نوع float شناخته می‌شود. بیشتر وقت‌ها پایتون خودش نوع عدد را تشخیص می‌دهد."},{"heading":"عملگرهای اصلی","body":"برای جمع از +، برای تفریق از -، برای ضرب از * و برای تقسیم از / استفاده می‌شود. توان با ** نوشته می‌شود و با % می‌توان باقی‌مانده تقسیم را گرفت. این نشانه‌ها پایه بسیاری از برنامه‌ها هستند."},{"heading":"اولویت محاسبات","body":"پایتون مثل ریاضی، ضرب و تقسیم را قبل از جمع و تفریق انجام می‌دهد. اگر می‌خواهی ترتیب را مشخص کنی، از پرانتز استفاده کن. کد خوب، محاسبه را طوری می‌نویسد که خواننده گیج نشود."},{"heading":"ذخیره نتیجه","body":"به جای اینکه محاسبه را مستقیم چاپ کنی، معمولاً بهتر است نتیجه را در یک متغیر ذخیره کنی. این کار باعث می‌شود بتوانی از نتیجه دوباره استفاده کنی و نام متغیر توضیح دهد محاسبه چه معنایی دارد."}],"examples":[{"title":"امتیاز کل","code":"base_score = 40\nbonus = 15\ntotal = base_score + bonus\nprint(total)","output":"55","explain":"دو عدد در متغیر ذخیره شده‌اند و نتیجه در total قرار گرفته است."},{"title":"میانگین ساده","code":"math = 18\nscience = 16\naverage = (math + science) / 2\nprint(average)","output":"17.0","explain":"پرانتز باعث می‌شود اول جمع انجام شود و سپس تقسیم بر 2."},{"title":"باقی‌مانده","code":"minutes = 125\nhours = minutes // 60\nleft = minutes % 60\nprint(hours)\nprint(left)","output":"2\n5","explain":"// تقسیم صحیح می‌دهد و % باقی‌مانده را برمی‌گرداند."}],"predict":{"code":"coins = 12\ncoins = coins + 8\nprint(coins * 2)","question":"خروجی چیست؟","options":["20","40","24","12"],"answer":1,"explain":"coins اول 12 است، بعد 8 تا اضافه می‌شود و 20 می‌شود. سپس 20 ضربدر 2 برابر 40 است."},"exercises":[{"id":"n1","title":"محاسبه XP","brief":"دو متغیر base_xp و bonus_xp بساز. مجموع آن‌ها را در total_xp ذخیره کن و total_xp را چاپ کن. مقدارها را طوری انتخاب کن که خروجی 120 شود.","requirements":["از سه متغیر base_xp، bonus_xp و total_xp استفاده کن.","خروجی باید 120 باشد.","نتیجه باید با جمع ساخته شود."],"checks":{"includes":["120"],"mustContain":["base_xp","bonus_xp","total_xp","+"]},"hints":["مثلاً دو عدد انتخاب کن که جمعشان 120 شود.","total_xp = base_xp + bonus_xp بنویس.","در پایان print(total_xp) لازم است."]},{"id":"n2","title":"تبدیل دقیقه به ساعت","brief":"متغیر minutes را برابر 150 قرار بده. تعداد ساعت کامل و دقیقه باقی‌مانده را محاسبه و چاپ کن.","requirements":["از // برای ساعت کامل استفاده کن.","از % برای دقیقه باقی‌مانده استفاده کن.","خروجی باید شامل 2 و 30 باشد."],"checks":{"includes":["2","30"],"mustContain":["//","%","150"]},"hints":["150 دقیقه یعنی 2 ساعت و 30 دقیقه.","hours = minutes // 60","remaining = minutes % 60"]},{"id":"n3","title":"قیمت نهایی","brief":"قیمت یک محصول 80 است و هزینه ارسال 15. قیمت نهایی را در final_price ذخیره کن و چاپ کن.","requirements":["متغیر final_price باید وجود داشته باشد.","خروجی باید 95 باشد."],"checks":{"includes":["95"],"mustContain":["final_price","80","15","+"]},"hints":["قیمت نهایی یعنی قیمت محصول + ارسال.","اول دو مقدار را در متغیر ذخیره کن."]}],"project":{"title":"ماشین‌حساب امتیاز بازی","brief":"یک ماشین‌حساب کوچک بساز که امتیاز پایه، جایزه مرحله و جریمه را محاسبه کند و امتیاز نهایی را چاپ کند.","steps":["سه متغیر base، bonus و penalty بساز.","final = base + bonus - penalty را محاسبه کن.","یک جمله خواندنی همراه با امتیاز نهایی چاپ کن."],"checks":{"includes":[],"mustContain":["base","bonus","penalty","final","+","-"]},"hints":["برای تبدیل عدد به متن می‌توانی فعلاً جداگانه print کنی.","مثلاً اول جمله و بعد عدد را چاپ کن."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]},{"id":"conditions","unit":"تصمیم‌گیری","title":"شرط‌ها: اگر این، پس آن","subtitle":"برنامه‌ای بساز که بر اساس وضعیت تصمیم بگیرد.","skill":"if / else","why":"یک برنامه واقعی همیشه یک مسیر ثابت ندارد. اگر رمز درست بود وارد شود، اگر امتیاز کافی بود مرحله باز شود، اگر هوا سرد بود پیام متفاوت بدهد. شرط‌ها به برنامه قدرت تصمیم‌گیری می‌دهند.","chunks":[{"heading":"ساختار if","body":"if یک شرط را بررسی می‌کند. اگر شرط درست باشد، کد داخل بدنه if اجرا می‌شود. بدنه if با تورفتگی مشخص می‌شود. در پایتون تورفتگی فقط زیبایی نیست؛ بخشی از معنی کد است."},{"heading":"مقایسه‌ها","body":"برای بررسی برابر بودن از == استفاده می‌شود، نه =. علامت = برای مقدار دادن است. مقایسه‌های مهم شامل >، <، >=، <=، == و != هستند."},{"heading":"else یعنی در غیر این صورت","body":"اگر شرط if درست نباشد، می‌توانی با else مسیر جایگزین بنویسی. این برای پیام‌های قبولی/عدم قبولی، موفقیت/شکست یا فعال/غیرفعال خیلی استفاده می‌شود."},{"heading":"elif برای چند انتخاب","body":"وقتی بیشتر از دو حالت داری، از elif استفاده می‌کنی. پایتون از بالا به پایین شرط‌ها را بررسی می‌کند و اولین شرط درست را اجرا می‌کند."}],"examples":[{"title":"قبولی ساده","code":"score = 75\nif score >= 60:\n    print(\"قبول شدی\")\nelse:\n    print(\"باید بیشتر تمرین کنی\")","output":"قبول شدی","explain":"چون score برابر 75 است و از 60 بیشتر است، بخش if اجرا می‌شود."},{"title":"سطح‌بندی","code":"xp = 130\nif xp >= 200:\n    print(\"پیشرفته\")\nelif xp >= 100:\n    print(\"در حال رشد\")\nelse:\n    print(\"شروع مسیر\")","output":"در حال رشد","explain":"شرط اول غلط است، شرط دوم درست است، پس همان بخش اجرا می‌شود."},{"title":"بررسی رمز","code":"password = \"python\"\nif password == \"python\":\n    print(\"ورود موفق\")\nelse:\n    print(\"رمز اشتباه است\")","output":"ورود موفق","explain":"برای مقایسه مقدارها از == استفاده شده است."}],"predict":{"code":"age = 15\nif age >= 18:\n    print(\"adult\")\nelse:\n    print(\"teen\")","question":"خروجی چیست؟","options":["adult","teen","age","خطا می‌دهد"],"answer":1,"explain":"15 از 18 کمتر است، پس شرط if درست نیست و else اجرا می‌شود."},"exercises":[{"id":"c1","title":"باز شدن مرحله","brief":"متغیر score را برابر 85 قرار بده. اگر score حداقل 80 بود، «مرحله باز شد» را چاپ کن، در غیر این صورت «امتیاز کافی نیست» را چاپ کن.","requirements":["از if و else استفاده کن.","خروجی باید «مرحله باز شد» باشد.","تورفتگی درست لازم است."],"checks":{"includes":["مرحله باز شد"],"mustContain":["if","else",">="]},"hints":["score = 85 از 80 بیشتر است.","بعد از if باید : بگذاری.","کد داخل if باید کمی جلوتر نوشته شود."]},{"id":"c2","title":"سطح کاربر","brief":"متغیر xp را برابر 170 قرار بده. اگر xp حداقل 200 بود «طلایی»، اگر حداقل 100 بود «نقره‌ای»، وگرنه «تازه‌کار» را چاپ کن.","requirements":["از if / elif / else استفاده کن.","خروجی باید «نقره‌ای» باشد."],"checks":{"includes":["نقره‌ای"],"mustContain":["if","elif","else"]},"hints":["170 کمتر از 200 ولی بیشتر از 100 است.","شرط‌ها از بالا به پایین بررسی می‌شوند."]},{"id":"c3","title":"بررسی موجودی","brief":"متغیر balance را برابر 40 و price را برابر 35 قرار بده. اگر موجودی کافی بود «خرید انجام شد» را چاپ کن، وگرنه «موجودی کافی نیست». ","requirements":["از دو متغیر balance و price استفاده کن.","شرط باید balance >= price باشد.","خروجی باید خرید موفق را نشان دهد."],"checks":{"includes":["خرید انجام شد"],"mustContain":["balance","price",">="]},"hints":["به جای عدد ثابت، دو متغیر را مقایسه کن.","if balance >= price:"]}],"project":{"title":"دروازه ورود به بازی","brief":"یک سیستم کوچک بساز که سن، امتیاز و نام کاربر را بررسی کند. اگر سن حداقل 13 و امتیاز حداقل 50 بود، پیام ورود بده؛ وگرنه پیام تمرین بیشتر بده.","steps":["متغیرهای name، age و score بساز.","با and دو شرط را ترکیب کن.","پیام خروجی را با نام کاربر شخصی‌سازی کن."],"checks":{"includes":[],"mustContain":["if","and","else","name","age","score"]},"hints":["شرط ترکیبی مثل age >= 13 and score >= 50 است.","برای پیام شخصی از + و name استفاده کن."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]},{"id":"loops","unit":"تکرار","title":"حلقه‌ها: انجام کارهای تکراری","subtitle":"به جای تکرار دستی، اجازه بده برنامه کار را چندبار انجام دهد.","skill":"for / range","why":"اگر بخواهی یک پیام را 100 بار چاپ کنی یا روی لیست نمره‌ها حرکت کنی، نوشتن دستی کد فاجعه است. حلقه‌ها برای تکرارهای کنترل‌شده ساخته شده‌اند.","chunks":[{"heading":"حلقه for","body":"for برای حرکت روی یک دنباله استفاده می‌شود. این دنباله می‌تواند range، یک رشته، یا یک لیست باشد. در هر دور حلقه، یک مقدار جدید به متغیر حلقه داده می‌شود."},{"heading":"range چیست؟","body":"range یک دنباله عددی می‌سازد. range(5) عددهای 0 تا 4 را تولید می‌کند. یعنی از صفر شروع می‌شود و قبل از عدد پایان متوقف می‌شود."},{"heading":"بدنه حلقه","body":"مثل if، کد داخل حلقه با تورفتگی مشخص می‌شود. هر خطی که داخل بدنه حلقه باشد، در هر دور تکرار اجرا می‌شود."},{"heading":"تکرار هدفمند","body":"حلقه فقط برای زیاد نوشتن نیست. حلقه یعنی یک الگوی کاری را روی چند مقدار اجرا کنیم: ساخت جدول، جمع کردن عددها، بررسی تمرین‌ها یا تولید پیام‌های مرحله‌ای."}],"examples":[{"title":"شمردن مرحله‌ها","code":"for step in range(3):\n    print(step)","output":"0\n1\n2","explain":"range(3) عددهای 0، 1 و 2 را می‌سازد."},{"title":"شروع از 1","code":"for level in range(1, 4):\n    print(\"Level\")\n    print(level)","output":"Level\n1\nLevel\n2\nLevel\n3","explain":"range(1, 4) از 1 شروع می‌شود و تا قبل از 4 ادامه دارد."},{"title":"جمع کردن","code":"total = 0\nfor number in range(1, 4):\n    total = total + number\nprint(total)","output":"6","explain":"total در هر دور مقدار جدید می‌گیرد: 1، سپس 3، سپس 6."}],"predict":{"code":"for i in range(2):\n    print(\"Hi\")\nprint(\"Done\")","question":"چند بار Hi چاپ می‌شود؟","options":["1 بار","2 بار","3 بار","هیچ‌بار"],"answer":1,"explain":"range(2) دو مقدار 0 و 1 دارد، پس بدنه حلقه دو بار اجرا می‌شود."},"exercises":[{"id":"l1","title":"شماره‌گذاری تمرین‌ها","brief":"با حلقه for عددهای 1 تا 5 را چاپ کن. هر عدد باید در خط جدا باشد.","requirements":["از for و range استفاده کن.","خروجی باید شامل 1 و 5 باشد.","نباید پنج print جداگانه بنویسی."],"checks":{"includes":["1","5"],"mustContain":["for","range"]},"hints":["range(1, 6) عددهای 1 تا 5 می‌دهد.","داخل حلقه print بنویس."]},{"id":"l2","title":"جمع امتیازها","brief":"با حلقه، جمع عددهای 1 تا 10 را محاسبه کن و نتیجه را چاپ کن.","requirements":["متغیر total داشته باش.","از for و range استفاده کن.","خروجی باید 55 باشد."],"checks":{"includes":["55"],"mustContain":["total","for","range","+"]},"hints":["total را قبل از حلقه برابر 0 قرار بده.","در هر دور total = total + number بنویس.","range(1, 11) مناسب است."]},{"id":"l3","title":"پیام پیشرفت","brief":"با حلقه، سه پیام پیشرفت چاپ کن: «قدم 1»، «قدم 2»، «قدم 3». عددها باید از حلقه بیایند.","requirements":["از for استفاده کن.","خروجی باید شامل قدم 1 و قدم 3 باشد."],"checks":{"includes":["قدم","1","3"],"mustContain":["for","range"]},"hints":["می‌توانی print(\"قدم\") و print(number) را جدا بنویسی.","یا عدد را با str(number) به متن تبدیل کنی."]}],"project":{"title":"گزارش تمرین روزانه","brief":"یک گزارش بساز که پنج روز تمرین را شماره‌گذاری کند و در پایان مجموع دقیقه‌های تمرین را چاپ کند.","steps":["یک متغیر minutes_per_day بساز.","با for پنج روز را چاپ کن.","مجموع دقیقه‌ها را محاسبه و چاپ کن."],"checks":{"includes":[],"mustContain":["for","range","total"]},"hints":["total را قبل از حلقه صفر کن.","در هر دور minutes_per_day را به total اضافه کن."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]},{"id":"lists","unit":"مجموعه داده","title":"لیست‌ها: چند مقدار در یک جا","subtitle":"وقتی یک برنامه باید با چند نام، چند امتیاز یا چند آیتم کار کند.","skill":"list","why":"بدون لیست، برای هر مقدار باید یک متغیر جدا بسازی. لیست به تو اجازه می‌دهد چند مقدار مرتبط را در یک ساختار نگه داری و با حلقه روی آن‌ها حرکت کنی.","chunks":[{"heading":"لیست چیست؟","body":"لیست مجموعه‌ای مرتب از مقدارهاست. مرتب یعنی هر آیتم جایگاه دارد. در پایتون، لیست با کروشه نوشته می‌شود: [\"Ali\", \"Sara\", \"Nima\"]."},{"heading":"اندیس یا index","body":"هر آیتم در لیست یک شماره جایگاه دارد که از صفر شروع می‌شود. اولین آیتم index صفر، دومین آیتم index یک و همین‌طور ادامه دارد. این موضوع در ابتدا عجیب است ولی در برنامه‌نویسی بسیار رایج است."},{"heading":"حرکت روی لیست","body":"یکی از بهترین کاربردهای لیست، استفاده همراه با حلقه for است. به جای اینکه هر آیتم را جداگانه چاپ کنی، با یک حلقه روی همه آیتم‌ها حرکت می‌کنی."},{"heading":"افزودن آیتم","body":"با append می‌توانی آیتم جدید به انتهای لیست اضافه کنی. این برای جمع‌آوری پاسخ‌ها، امتیازها، یا کارهای انجام‌شده بسیار مفید است."}],"examples":[{"title":"چاپ یک آیتم","code":"skills = [\"print\", \"variables\", \"loops\"]\nprint(skills[0])","output":"print","explain":"اندیس صفر یعنی اولین آیتم لیست."},{"title":"حلقه روی لیست","code":"tasks = [\"read\", \"code\", \"test\"]\nfor task in tasks:\n    print(task)","output":"read\ncode\ntest","explain":"حلقه هر بار یکی از آیتم‌های لیست را داخل task قرار می‌دهد."},{"title":"اضافه کردن","code":"badges = []\nbadges.append(\"Starter\")\nbadges.append(\"Coder\")\nprint(badges)","output":"['Starter', 'Coder']","explain":"append آیتم‌ها را به انتهای لیست اضافه می‌کند."}],"predict":{"code":"items = [\"pen\", \"book\", \"bag\"]\nprint(items[1])","question":"خروجی چیست؟","options":["pen","book","bag","خطا می‌دهد"],"answer":1,"explain":"اندیس‌ها از صفر شروع می‌شوند؛ items[1] یعنی آیتم دوم، یعنی book."},"exercises":[{"id":"li1","title":"فهرست مهارت‌ها","brief":"یک لیست به نام skills با سه مهارت پایتون بساز. سپس با حلقه for همه مهارت‌ها را چاپ کن.","requirements":["لیست skills باید وجود داشته باشد.","از for استفاده کن.","حداقل سه آیتم در لیست باشد."],"checks":{"includes":[],"mustContain":["skills","[","]","for"]},"hints":["skills = [\"print\", \"variables\", \"loops\"]","for skill in skills:","داخل حلقه print(skill) بنویس."]},{"id":"li2","title":"میانگین نمره‌ها","brief":"لیست scores را با عددهای 12، 18 و 20 بساز. مجموع را با sum حساب کن و میانگین را چاپ کن.","requirements":["لیست scores باید وجود داشته باشد.","از sum استفاده کن.","خروجی باید حدود 16.666 باشد یا نتیجه تقسیم را نشان دهد."],"checks":{"includes":["16"],"mustContain":["scores","sum","/"]},"hints":["average = sum(scores) / len(scores)","len تعداد آیتم‌های لیست را می‌دهد."]},{"id":"li3","title":"لیست کارهای انجام‌شده","brief":"یک لیست خالی به نام done بساز. با append سه کار به آن اضافه کن و در پایان لیست را چاپ کن.","requirements":["از append استفاده کن.","done باید در کد باشد.","خروجی باید لیست را نشان دهد."],"checks":{"includes":["["],"mustContain":["done","append"]},"hints":["done = []","done.append(\"...\")","در پایان print(done)"]}],"project":{"title":"ردیاب کارهای مطالعه","brief":"یک ردیاب کوچک بساز که چند کار مطالعه را در لیست نگه دارد، همه را چاپ کند و تعداد کارها را نشان دهد.","steps":["یک لیست tasks بساز.","با for آیتم‌ها را چاپ کن.","با len تعداد کارها را چاپ کن."],"checks":{"includes":[],"mustContain":["tasks","for","len"]},"hints":["تعداد کارها یعنی len(tasks).","می‌توانی اول جمله و بعد عدد را جدا چاپ کنی."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]},{"id":"dictionaries","unit":"داده ساختاریافته","title":"دیکشنری‌ها: اطلاعات با کلید و مقدار","subtitle":"برای ذخیره اطلاعاتی مثل پروفایل، تنظیمات و وضعیت کاربر.","skill":"dict","why":"گاهی لیست کافی نیست، چون فقط ترتیب آیتم‌ها را دارد. برای پروفایل کاربر، باید بدانیم نام چیست، سن چیست، سطح چیست. دیکشنری هر مقدار را با یک کلید معنی‌دار ذخیره می‌کند.","chunks":[{"heading":"دیکشنری چیست؟","body":"دیکشنری مجموعه‌ای از جفت‌های کلید و مقدار است. کلید مثل برچسب عمل می‌کند و مقدار اطلاعات واقعی است. مثال: {\"name\": \"Sara\", \"level\": 2}."},{"heading":"خواندن مقدار","body":"برای گرفتن مقدار، نام کلید را داخل کروشه می‌نویسی. user[\"name\"] مقدار مربوط به کلید name را برمی‌گرداند."},{"heading":"تغییر و افزودن","body":"می‌توانی مقدار یک کلید را تغییر دهی یا کلید جدید اضافه کنی. دیکشنری برای وضعیت‌هایی که تغییر می‌کنند عالی است؛ مثل XP، تنظیمات، یا تعداد تمرین‌های حل‌شده."},{"heading":"کلیدهای معنی‌دار","body":"قدرت دیکشنری در خوانایی آن است. وقتی می‌نویسی profile[\"goal\"]، خواننده سریع می‌فهمد هدف کاربر ذخیره شده است."}],"examples":[{"title":"پروفایل ساده","code":"user = {\"name\": \"Sara\", \"level\": 1}\nprint(user[\"name\"])\nprint(user[\"level\"])","output":"Sara\n1","explain":"با کلیدها مقدارهای داخل دیکشنری خوانده می‌شوند."},{"title":"تغییر سطح","code":"player = {\"name\": \"Nima\", \"xp\": 90}\nplayer[\"xp\"] = 120\nprint(player[\"xp\"])","output":"120","explain":"مقدار کلید xp تغییر کرده است."},{"title":"اضافه کردن کلید","code":"settings = {\"theme\": \"light\"}\nsettings[\"sound\"] = \"off\"\nprint(settings)","output":"{'theme': 'light', 'sound': 'off'}","explain":"کلید جدید sound به دیکشنری اضافه شده است."}],"predict":{"code":"profile = {\"name\": \"Ava\", \"age\": 14}\nprint(profile[\"age\"])","question":"خروجی چیست؟","options":["Ava","14","age","خطا می‌دهد"],"answer":1,"explain":"کلید age مقدار 14 را نگه می‌دارد."},"exercises":[{"id":"d1","title":"پروفایل زبان‌آموز","brief":"یک دیکشنری به نام learner بساز که کلیدهای name، goal و level داشته باشد. سپس مقدار name و goal را چاپ کن.","requirements":["دیکشنری learner باید وجود داشته باشد.","کلیدهای name و goal باید استفاده شوند.","خروجی باید نام و هدف را نشان دهد."],"checks":{"includes":[],"mustContain":["learner","name","goal","{"]},"hints":["learner = {\"name\": \"...\", \"goal\": \"...\"}","برای خواندن مقدار: learner[\"name\"]"]},{"id":"d2","title":"افزایش امتیاز","brief":"دیکشنری player با کلید xp بساز. مقدار xp را 70 قرار بده، سپس 30 تا به آن اضافه کن و xp نهایی را چاپ کن.","requirements":["از دیکشنری player استفاده کن.","xp باید به 100 برسد.","خروجی باید 100 باشد."],"checks":{"includes":["100"],"mustContain":["player","xp","+"]},"hints":["player[\"xp\"] = player[\"xp\"] + 30","بعد از تغییر، مقدار جدید را چاپ کن."]},{"id":"d3","title":"تنظیمات برنامه","brief":"دیکشنری settings بساز. اول theme را light قرار بده. بعد کلید language را اضافه کن و مقدار آن را Python بگذار. در پایان کل دیکشنری را چاپ کن.","requirements":["settings باید دیکشنری باشد.","language باید بعداً اضافه شود.","خروجی باید Python را نشان دهد."],"checks":{"includes":["Python"],"mustContain":["settings","language"]},"hints":["بعد از ساخت دیکشنری، settings[\"language\"] = \"Python\" بنویس."]}],"project":{"title":"کارت وضعیت کاربر","brief":"یک کارت وضعیت با دیکشنری بساز که نام، سطح، XP و هدف را نگه دارد و یک گزارش خواندنی چاپ کند.","steps":["یک دیکشنری profile بساز.","چهار کلید name، level، xp و goal قرار بده.","چند خط گزارش از مقدارهای دیکشنری چاپ کن."],"checks":{"includes":[],"mustContain":["profile","name","level","xp","goal"]},"hints":["از profile[\"name\"] برای خواندن نام استفاده کن.","می‌توانی گزارش را در چند print جدا چاپ کنی."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]},{"id":"functions","unit":"ساختار حرفه‌ای","title":"تابع‌ها: بسته‌بندی یک کار","subtitle":"کدی بنویس که قابل استفاده دوباره و تمیزتر باشد.","skill":"def / return","why":"وقتی یک کار را چند بار لازم داری، تابع می‌سازی. تابع‌ها باعث می‌شوند برنامه کوتاه‌تر، خواناتر و حرفه‌ای‌تر شود. از همین‌جا کد تو شبیه پروژه واقعی می‌شود.","chunks":[{"heading":"تابع چیست؟","body":"تابع یک قطعه کد نام‌گذاری‌شده است که یک کار مشخص انجام می‌دهد. با def تابع را تعریف می‌کنی. بعد هر وقت نام تابع را صدا بزنی، کد داخل آن اجرا می‌شود."},{"heading":"ورودی تابع","body":"تابع می‌تواند ورودی بگیرد. ورودی‌ها داخل پرانتز تعریف می‌شوند و مثل متغیرهای موقت داخل تابع استفاده می‌شوند. این باعث می‌شود تابع با داده‌های مختلف کار کند."},{"heading":"return","body":"print فقط چیزی را نشان می‌دهد، اما return نتیجه را به بیرون تابع برمی‌گرداند. در پروژه‌های واقعی، بیشتر وقت‌ها تابع‌ها باید return داشته باشند تا بتوان نتیجه را در جای دیگر استفاده کرد."},{"heading":"تابع خوب کوچک است","body":"یک تابع خوب معمولاً یک کار روشن انجام می‌دهد. اگر تابع هم محاسبه کند، هم چاپ کند، هم تصمیم بگیرد، خیلی زود پیچیده می‌شود. تابع‌های کوچک و نام‌دار کد را قابل نگهداری می‌کنند."}],"examples":[{"title":"تابع سلام","code":"def greet(name):\n    return \"Hello, \" + name\n\nprint(greet(\"Sara\"))","output":"Hello, Sara","explain":"تابع greet یک نام می‌گیرد و پیام سلام برمی‌گرداند."},{"title":"تابع جمع امتیاز","code":"def total_score(base, bonus):\n    return base + bonus\n\nprint(total_score(40, 15))","output":"55","explain":"تابع با دو ورودی کار می‌کند و نتیجه جمع را برمی‌گرداند."},{"title":"تابع تصمیم‌گیر","code":"def pass_message(score):\n    if score >= 60:\n        return \"passed\"\n    return \"try again\"\n\nprint(pass_message(80))","output":"passed","explain":"return باعث خروج نتیجه از تابع می‌شود. اینجا if تعیین می‌کند چه متنی برگردد."}],"predict":{"code":"def double(x):\n    return x * 2\n\nprint(double(6))","question":"خروجی چیست؟","options":["6","12","x * 2","خطا می‌دهد"],"answer":1,"explain":"تابع double ورودی 6 را می‌گیرد، آن را در 2 ضرب می‌کند و 12 برمی‌گرداند."},"exercises":[{"id":"f1","title":"تابع خوش‌آمد","brief":"تابعی به نام welcome بساز که یک name بگیرد و متن «سلام، name» را برگرداند. فقط تابع را تعریف کن؛ تست برنامه خودش آن را صدا می‌زند.","requirements":["نام تابع باید welcome باشد.","تابع باید یک ورودی name داشته باشد.","باید از return استفاده شود، نه فقط print."],"checks":{"includes":["سلام"],"mustContain":["def welcome","return"],"appendTest":"\nprint(welcome(\"Sara\"))"},"hints":["def welcome(name):","داخل تابع return \"سلام، \" + name بنویس.","به تورفتگی دقت کن."]},{"id":"f2","title":"محاسبه قیمت نهایی","brief":"تابعی به نام final_price بساز که price و shipping بگیرد و جمع آن‌ها را return کند.","requirements":["تابع باید final_price نام داشته باشد.","دو ورودی price و shipping داشته باشد.","برای ورودی‌های 80 و 15 خروجی باید 95 شود."],"checks":{"includes":["95"],"mustContain":["def final_price","return","+"],"appendTest":"\nprint(final_price(80, 15))"},"hints":["def final_price(price, shipping):","return price + shipping"]},{"id":"f3","title":"تشخیص قبولی","brief":"تابعی به نام result بساز که score بگیرد. اگر score حداقل 60 بود «قبول» وگرنه «تمرین بیشتر» را return کند.","requirements":["از if استفاده کن.","از return استفاده کن.","برای score=75 باید «قبول» برگردد."],"checks":{"includes":["قبول"],"mustContain":["def result","if","return"],"appendTest":"\nprint(result(75))"},"hints":["داخل تابع if score >= 60 بنویس.","در هر مسیر return جدا لازم است."]}],"project":{"title":"موتور پیام هوشمند","brief":"تابعی بساز که بر اساس امتیاز، پیام مناسب برگرداند: بالای 80 عالی، بالای 50 خوب، وگرنه نیاز به تمرین.","steps":["تابع feedback(score) تعریف کن.","از if / elif / else استفاده کن.","برای چند امتیاز مختلف تابع را تست کن."],"checks":{"includes":[],"mustContain":["def feedback","if","elif","else","return"]},"hints":["بهتر است تابع فقط return کند و چاپ جدا باشد.","بعد از تعریف تابع، print(feedback(90)) را امتحان کن."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]},{"id":"strings-methods","unit":"متن واقعی","title":"کار با متن‌ها","subtitle":"تمیز کردن، تغییر دادن و بررسی رشته‌ها.","skill":"string methods","why":"بسیاری از برنامه‌ها با متن کار می‌کنند: نام کاربر، پیام چت، رمز، ایمیل، جست‌وجو و گزارش. متدهای رشته‌ای کمک می‌کنند متن را آماده، بررسی و تبدیل کنی.","chunks":[{"heading":"متد یعنی ابزار آماده","body":"رشته‌ها در پایتون ابزارهای آماده دارند که با نقطه صدا زده می‌شوند. مثل text.upper() برای بزرگ کردن حروف انگلیسی یا text.strip() برای حذف فاصله‌های اضافی ابتدا و انتها."},{"heading":"strip برای تمیزکاری","body":"وقتی کاربر چیزی وارد می‌کند، ممکن است اول یا آخر آن فاصله اضافه باشد. strip این فاصله‌ها را حذف می‌کند. این کار برای مقایسه درست متن‌ها بسیار مهم است."},{"heading":"lower برای مقایسه ساده‌تر","body":"اگر می‌خواهی Python و python را یکسان حساب کنی، می‌توانی متن را با lower به حروف کوچک تبدیل کنی. این روش در جست‌وجو و بررسی پاسخ‌ها استفاده می‌شود."},{"heading":"in برای بررسی وجود متن","body":"با in می‌توانی بررسی کنی یک بخش کوچک داخل یک متن بزرگ‌تر وجود دارد یا نه. مثلاً \"py\" in \"python\" نتیجه True می‌دهد."}],"examples":[{"title":"حذف فاصله","code":"name = \"  Sara  \"\nclean = name.strip()\nprint(clean)","output":"Sara","explain":"strip فاصله‌های اضافه ابتدا و انتهای متن را حذف می‌کند."},{"title":"یکسان‌سازی حروف","code":"answer = \"Python\"\nprint(answer.lower())","output":"python","explain":"lower حروف انگلیسی را کوچک می‌کند."},{"title":"جست‌وجو داخل متن","code":"message = \"I love Python projects\"\nif \"Python\" in message:\n    print(\"found\")","output":"found","explain":"چون Python داخل message وجود دارد، شرط درست است."}],"predict":{"code":"word = \"  CODE  \"\nprint(word.strip().lower())","question":"خروجی چیست؟","options":["CODE","code","  code  ","خطا می‌دهد"],"answer":1,"explain":"اول strip فاصله‌ها را حذف می‌کند، بعد lower حروف را کوچک می‌کند."},"exercises":[{"id":"s1","title":"پاک‌سازی نام","brief":"متغیر username را با مقدار \"  PixelCoder  \" بساز. آن را با strip تمیز کن و نتیجه را چاپ کن.","requirements":["از strip استفاده کن.","خروجی باید PixelCoder بدون فاصله اضافی باشد."],"checks":{"includes":["PixelCoder"],"mustContain":["strip"]},"hints":["clean = username.strip()","بعد clean را چاپ کن."]},{"id":"s2","title":"بررسی پاسخ","brief":"متغیر answer را برابر \"PYTHON\" قرار بده. آن را با lower کوچک کن. اگر برابر python بود، «درست» را چاپ کن.","requirements":["از lower استفاده کن.","از if استفاده کن.","خروجی باید «درست» باشد."],"checks":{"includes":["درست"],"mustContain":["lower","if","=="]},"hints":["answer.lower() نتیجه python می‌دهد.","if answer.lower() == \"python\":"]},{"id":"s3","title":"جست‌وجوی کلمه","brief":"متغیر bio را با یک جمله انگلیسی شامل Python بساز. اگر Python داخل bio بود، «مهارت پیدا شد» را چاپ کن.","requirements":["از in استفاده کن.","خروجی باید «مهارت پیدا شد» باشد."],"checks":{"includes":["مهارت پیدا شد"],"mustContain":[" in ","if"]},"hints":["if \"Python\" in bio:","متن bio باید واقعاً شامل Python باشد."]}],"project":{"title":"بررسی ساده نام کاربری","brief":"یک برنامه بساز که username را تمیز کند، کوچک کند و اگر شامل فاصله بود پیام خطا بدهد، وگرنه پیام تایید چاپ کند.","steps":["username را با یک مقدار متنی بساز.","با strip و lower آن را آماده کن.","با in بررسی کن آیا فاصله داخل آن هست یا نه."],"checks":{"includes":[],"mustContain":["strip","lower","if"," in "]},"hints":["برای بررسی فاصله: if \" \" in username","اول مقدار تمیزشده را در متغیر جدا ذخیره کن."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]},{"id":"debugging","unit":"مهارت واقعی","title":"دیباگ: پیدا کردن و اصلاح خطا","subtitle":"خطا نشانه شکست نیست؛ مسیر پیدا کردن مسئله است.","skill":"debugging","why":"هر برنامه‌نویس، حتی حرفه‌ای‌ها، با خطا روبه‌رو می‌شود. مهارت مهم این نیست که هیچ‌وقت خطا نکنی؛ مهارت مهم این است که بفهمی خطا چه می‌گوید و آرام آن را اصلاح کنی.","chunks":[{"heading":"خطاها اطلاعات می‌دهند","body":"وقتی پایتون خطا می‌دهد، معمولاً نوع خطا و خط تقریبی مشکل را نشان می‌دهد. باید پیام را آرام بخوانی: آیا مشکل از نقل‌قول است؟ از نام متغیر؟ از تورفتگی؟"},{"heading":"SyntaxError","body":"این خطا یعنی شکل کد درست نیست. ممکن است پرانتز، نقل‌قول، دو نقطه بعد از if/for/def یا تورفتگی را اشتباه نوشته باشی."},{"heading":"NameError","body":"این خطا معمولاً یعنی از نامی استفاده کرده‌ای که هنوز تعریف نشده است. شاید اسم متغیر را اشتباه تایپ کرده‌ای یا قبل از ساختنش از آن استفاده کرده‌ای."},{"heading":"روش سه‌مرحله‌ای","body":"اول پیام خطا را بخوان. دوم خط اشاره‌شده و خط قبلش را بررسی کن. سوم کوچک‌ترین تغییر ممکن را انجام بده و دوباره اجرا کن. دیباگ خوب یعنی تغییرهای کوچک و قابل فهم."}],"examples":[{"title":"نام اشتباه متغیر","code":"score = 90\nprint(score)","output":"90","explain":"اگر به جای score بنویسی scor، پایتون NameError می‌دهد. اسم‌ها باید دقیقاً مثل هم باشند."},{"title":"دو نقطه بعد از if","code":"age = 14\nif age >= 13:\n    print(\"OK\")","output":"OK","explain":"بعد از شرط if باید : بیاید و بدنه شرط باید تورفتگی داشته باشد."},{"title":"ساخت قدم‌به‌قدم","code":"total = 0\ntotal = total + 10\nprint(total)","output":"10","explain":"برای پیدا کردن مشکل، برنامه را کوچک و مرحله‌ای اجرا کن."}],"predict":{"code":"name = \"Sara\"\nprint(nam)","question":"چه اتفاقی می‌افتد؟","options":["Sara چاپ می‌شود","NameError رخ می‌دهد","SyntaxError رخ می‌دهد","هیچ خروجی ندارد ولی درست است"],"answer":1,"explain":"متغیر name ساخته شده، اما nam تعریف نشده است. یک حرف کم شده و NameError رخ می‌دهد."},"exercises":[{"id":"dbg1","title":"اصلاح نام متغیر","brief":"کدی بنویس که score را برابر 100 قرار دهد و همان متغیر را درست چاپ کند. مراقب باش نام متغیر در هر دو خط دقیقاً یکی باشد.","requirements":["score باید تعریف شود.","خروجی باید 100 باشد.","نباید NameError داشته باشد."],"checks":{"includes":["100"],"mustContain":["score","print"]},"hints":["score = 100","print(score)"]},{"id":"dbg2","title":"اصلاح شرط","brief":"کدی بنویس که age را برابر 16 قرار دهد. اگر age حداقل 13 بود، «اجازه ورود» را چاپ کند.","requirements":["بعد از شرط باید دو نقطه باشد.","بدنه if باید تورفتگی داشته باشد.","خروجی باید «اجازه ورود» باشد."],"checks":{"includes":["اجازه ورود"],"mustContain":["if",":"]},"hints":["if age >= 13:","خط print زیر if باید تورفتگی داشته باشد."]},{"id":"dbg3","title":"ردیابی مقدار","brief":"یک متغیر total بساز، اول 5 به آن اضافه کن، بعد 7، و پس از هر تغییر مقدار total را چاپ کن.","requirements":["خروجی باید 5 و 12 را نشان دهد.","از یک متغیر total استفاده کن.","بعد از هر تغییر print داشته باش."],"checks":{"includes":["5","12"],"mustContain":["total","+"]},"hints":["total = 0","total = total + 5","بعد print(total) بنویس."]}],"project":{"title":"دفترچه دیباگ کوچک","brief":"یک برنامه کوچک بساز که چند مرحله محاسبه را چاپ کند تا بتوانی مسیر تغییر مقدار را ببینی.","steps":["یک مقدار اولیه بساز.","در چند مرحله آن را تغییر بده.","بعد از هر مرحله پیام واضح و مقدار را چاپ کن."],"checks":{"includes":[],"mustContain":["print","="]},"hints":["پیام‌های خروجی باید کمک کنند بفهمی هر مرحله چه شده است.","این پروژه بیشتر درباره واضح‌سازی مسیر فکر است."]},"mastery":["مفهوم را با زبان خودت توضیح بدهی.","حداقل دو تمرین را بدون کد آماده حل کنی.","وقتی خطا دیدی، پیام را بخوانی و یک اصلاح کوچک انجام دهی."]}]</script>
+  <div class="app" id="appShell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">Py</div>
+        <div>
+          <h1>Python Studio</h1>
+          <p>یک مسیر آرام، عمیق و عملی برای یادگیری پایتون</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="pill" id="resumeLabel">ذخیره خودکار فعال است</span>
+        <button class="icon-btn" id="themeBtn" title="تغییر حالت روشن/تاریک" aria-label="تغییر حالت روشن/تاریک">◐</button>
+        <button class="icon-btn" id="calmBtn" title="حالت آرام" aria-label="حالت آرام">◎</button>
+        <button class="secondary" id="focusBtn">تمرکز</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <aside class="side">
+        <section class="card panel">
+          <div class="course-title">
+            <div>
+              <h2>مسیر یادگیری</h2>
+              <p>درس‌ها مرحله‌به‌مرحله باز می‌شوند.</p>
+            </div>
+            <span class="tag" id="coursePercent">۰٪</span>
+          </div>
+          <div class="stats" aria-label="آمار پیشرفت">
+            <div class="stat"><b id="xpStat">0</b><span>XP</span></div>
+            <div class="stat"><b id="levelStat">1</b><span>سطح</span></div>
+            <div class="stat"><b id="streakStat">0</b><span>روز</span></div>
+          </div>
+          <div class="progress-wrap" aria-hidden="true"><div class="progress-fill" id="courseFill"></div></div>
+        </section>
+        <section class="card panel">
+          <div class="course-title">
+            <div>
+              <h2>درس‌ها</h2>
+              <p>هر درس با تمرین واقعی کامل می‌شود.</p>
+            </div>
+          </div>
+          <div class="lesson-list" id="lessonList"></div>
+        </section>
+        <section class="card panel" id="reviewCard">
+          <div class="course-title">
+            <div>
+              <h2>مرور هوشمند</h2>
+              <p id="reviewText">وقتی تمرینی سخت شود، اینجا مسیر مرور ساخته می‌شود.</p>
+            </div>
+          </div>
+          <div id="reviewSkills"></div>
+        </section>
+      </aside>
+
+      <main class="main">
+        <section class="card hero">
+          <div class="hero-content">
+            <div class="eyebrow"><span class="tag" id="unitTag">شروع</span><span id="skillTag">خروجی گرفتن</span></div>
+            <h2 id="lessonTitle">Python Studio</h2>
+            <p id="lessonSubtitle">یادگیری عمیق، تمرین واقعی و پروژه‌های کوچک.</p>
+            <div class="hero-actions">
+              <button class="primary" id="mainActionBtn">شروع قدم بعدی</button>
+              <button class="secondary" id="projectsBtn">میکروپروژه‌ها</button>
+              <button class="ghost" id="exportBtn">خروجی پیشرفت</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card step-strip" id="stepStrip" aria-label="مراحل درس"></section>
+        <section class="card next-card">
+          <div>
+            <h3 id="nextTitle">فقط قدم بعدی</h3>
+            <p id="nextBody">یک بخش کوتاه را بخوان، بعد به قدم بعدی برو.</p>
+          </div>
+          <button class="secondary" id="nextStepBtn">قدم بعدی</button>
+        </section>
+
+        <section class="card section" id="content"></section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="projectTitle">
+    <div class="modal">
+      <h2 id="projectTitle">میکروپروژه‌ها</h2>
+      <p>پروژه‌های کوچک برای تبدیل درس به مهارت واقعی. هر پروژه را با کد خالی شروع کن و مرحله‌به‌مرحله بساز.</p>
+      <div class="project-grid" id="projectGrid"></div>
+      <div class="nav-row"><button class="secondary" id="closeProjectModal">بستن</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (() => {
+    "use strict";
+    const LESSONS = JSON.parse(document.getElementById("curriculum-data").textContent);
+    const STORE_KEY = "pythonStudio.productionLearning.v1";
+    const STEPS = [
+      {id:"learn", label:"یادگیری", next:"یک توضیح کوتاه و عمیق بخوان."},
+      {id:"examples", label:"مثال‌ها", next:"یک مثال را تحلیل کن؛ فقط نگاه نکن، حدس بزن چرا کار می‌کند."},
+      {id:"predict", label:"پیش‌بینی", next:"قبل از اجرا، خروجی کد را پیش‌بینی کن."},
+      {id:"practice", label:"تمرین", next:"از صفر کد بنویس. ادیتور عمداً خالی است."},
+      {id:"reflect", label:"جمع‌بندی", next:"یک جمله بنویس که امروز چه چیزی یاد گرفتی."}
+    ];
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const fa = new Intl.NumberFormat("fa-IR");
+    const todayKey = () => new Date().toISOString().slice(0,10);
+    const emptyProgress = () => ({
+      lessonIndex:0, step:"learn", chunk:0, example:0, exercise:0,
+      xp:0, streak:0, lastActive:null, theme:"light", calm:false, focus:false,
+      completed:{}, readChunks:{}, viewedExamples:{}, predictions:{}, exercises:{}, projects:{}, reflections:{}, attempts:{}, hints:{}, drafts:{}, projectDrafts:{}, weakSkills:{}
+    });
+    let state = load();
+    let runner = null;
+    let requestId = 0;
+
+    function load(){
+      try { return {...emptyProgress(), ...(JSON.parse(localStorage.getItem(STORE_KEY)) || {})}; }
+      catch { return emptyProgress(); }
+    }
+    function save(){
+      localStorage.setItem(STORE_KEY, JSON.stringify(state));
+      $("#resumeLabel").textContent = "ذخیره شد";
+      clearTimeout(save._t); save._t = setTimeout(()=>$("#resumeLabel").textContent="ذخیره خودکار فعال است", 1300);
+    }
+    function touchActivity(){
+      const today = todayKey();
+      if(state.lastActive !== today){
+        const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+        state.streak = state.lastActive === yesterday ? (state.streak||0)+1 : 1;
+        state.lastActive = today;
+      }
+    }
+    function lesson(){ return LESSONS[state.lessonIndex] || LESSONS[0]; }
+    function lessonKey(i=state.lessonIndex){ return LESSONS[i].id; }
+    function isUnlocked(i){ return i === 0 || !!state.completed[lessonKey(i-1)]; }
+    function isDone(i){ return !!state.completed[lessonKey(i)]; }
+    function stepIndex(){ return Math.max(0, STEPS.findIndex(s=>s.id===state.step)); }
+    function stepDone(step){
+      const l = lesson(); const id = l.id;
+      if(step === "learn") return (state.readChunks[id] || []).length >= l.chunks.length;
+      if(step === "examples") return (state.viewedExamples[id] || []).length >= Math.min(2,l.examples.length);
+      if(step === "predict") return state.predictions[id]?.correct === true;
+      if(step === "practice") return passedExercises(id).length >= 2;
+      if(step === "reflect") return (state.reflections[id] || "").trim().length >= 20;
+      return false;
+    }
+    function passedExercises(id=lesson().id){ return Object.entries(state.exercises[id]||{}).filter(([,v])=>v?.passed).map(([k])=>k); }
+    function activeExercise(){ return lesson().exercises[state.exercise] || lesson().exercises[0]; }
+    function draftKey(ex=activeExercise()){ return `${lesson().id}:${ex.id}`; }
+    function addXP(amount){ state.xp = (state.xp||0) + amount; }
+    function level(){ return Math.max(1, Math.floor((state.xp||0)/160)+1); }
+    function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),2600); }
+    function escapeHtml(s){ return String(s ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c])); }
+    function normalizeOut(s){ return String(s||"").replace(/\r/g,"").trim(); }
+    function friendlyError(text){
+      const s = String(text||"");
+      if(/SyntaxError/.test(s)) return "شکل نوشتن کد درست نیست. پرانتز، نقل‌قول، دو نقطه بعد از if/for/def و تورفتگی را بررسی کن.";
+      if(/IndentationError/.test(s)) return "تورفتگی درست نیست. خط‌های داخل if، for یا def باید کمی جلوتر نوشته شوند.";
+      if(/NameError/.test(s)) return "از نامی استفاده شده که پایتون آن را نمی‌شناسد. املای متغیر یا ترتیب ساخت آن را بررسی کن.";
+      if(/TypeError/.test(s)) return "نوع داده‌ها با کاری که انجام می‌دهی سازگار نیست. مثلاً شاید متن و عدد را مستقیم با هم ترکیب کرده‌ای.";
+      if(/Timeout/.test(s)) return "کد بیش از حد طول کشید. اگر حلقه داری، مطمئن شو بی‌نهایت تکرار نمی‌شود.";
+      return "کد اجرا نشد. پیام خروجی را بخوان و کوچک‌ترین بخش مشکوک را اصلاح کن.";
+    }
+
+    function applyShell(){
+      document.documentElement.dataset.theme = state.theme === "dark" ? "dark" : "light";
+      document.body.classList.toggle("calm", !!state.calm);
+      $("#appShell").classList.toggle("focus", !!state.focus);
+      $("#focusBtn").textContent = state.focus ? "نمای کامل" : "تمرکز";
+    }
+
+    function render(){
+      touchActivity();
+      applyShell();
+      const l = lesson();
+      $("#unitTag").textContent = l.unit;
+      $("#skillTag").textContent = l.skill;
+      $("#lessonTitle").textContent = l.title;
+      $("#lessonSubtitle").textContent = l.subtitle;
+      renderStats(); renderLessonList(); renderSteps(); renderNext(); renderContent(); renderReview();
+      save();
+    }
+    function renderStats(){
+      const done = LESSONS.filter((_,i)=>isDone(i)).length;
+      const pct = Math.round(done / LESSONS.length * 100);
+      $("#xpStat").textContent = fa.format(state.xp||0);
+      $("#levelStat").textContent = fa.format(level());
+      $("#streakStat").textContent = fa.format(state.streak||0);
+      $("#coursePercent").textContent = fa.format(pct) + "٪";
+      $("#courseFill").style.width = pct + "%";
+    }
+    function renderLessonList(){
+      $("#lessonList").innerHTML = LESSONS.map((l,i)=>`
+        <button class="lesson-item ${i===state.lessonIndex?'active':''} ${isDone(i)?'done':''} ${!isUnlocked(i)?'locked':''}" data-lesson="${i}" ${!isUnlocked(i)?'aria-disabled="true"':''}>
+          <span class="num">${isDone(i)?'✓':fa.format(i+1)}</span>
+          <span class="lesson-text"><strong>${escapeHtml(l.title)}</strong><span>${escapeHtml(l.unit)} · ${escapeHtml(l.skill)}</span></span>
+          <span class="tag">${isUnlocked(i)?(isDone(i)?'کامل':'باز'):'قفل'}</span>
+        </button>`).join("");
+      $$("[data-lesson]").forEach(btn=>btn.addEventListener("click",()=>{
+        const i = Number(btn.dataset.lesson);
+        if(!isUnlocked(i)){ toast("این درس بعد از کامل شدن درس قبلی باز می‌شود."); return; }
+        state.lessonIndex = i; state.step = "learn"; state.chunk = 0; state.example = 0; state.exercise = 0; render();
+      }));
+    }
+    function renderSteps(){
+      const current = stepIndex();
+      $("#stepStrip").innerHTML = STEPS.map((s,i)=>`<button class="step ${s.id===state.step?'active':''} ${stepDone(s.id)?'done':''}" data-step="${s.id}"><b>${escapeHtml(s.label)}</b>${i<current?'انجام شد':i===current?'در حال انجام':'بعداً'}</button>`).join("");
+      $$("[data-step]").forEach(btn=>btn.addEventListener("click",()=>{
+        const target = btn.dataset.step; const targetIndex = STEPS.findIndex(s=>s.id===target);
+        const allowed = targetIndex <= stepIndex() || STEPS.slice(0,targetIndex).every(s=>stepDone(s.id));
+        if(!allowed){ toast("اول قدم فعلی را کامل کن، بعد برو سراغ قدم بعدی."); return; }
+        state.step = target; render();
+      }));
+    }
+    function renderNext(){
+      const l = lesson();
+      const current = STEPS[stepIndex()];
+      let title = "فقط قدم بعدی";
+      let body = current.next;
+      if(state.step === "learn") body = `بخش ${fa.format((state.chunk||0)+1)} از ${fa.format(l.chunks.length)} را بخوان. لازم نیست همه چیز را یک‌باره حفظ کنی.`;
+      if(state.step === "practice") body = `تمرین ${fa.format((state.exercise||0)+1)} را از یک ادیتور خالی حل کن. مثال‌ها برای یادگیری هستند، نه کپی.`;
+      if(stepDone(state.step)) { title = "این قدم آماده است"; body = "می‌توانی به قدم بعدی بروی. مسیر آرام ولی دقیق پیش می‌رود."; }
+      $("#nextTitle").textContent = title; $("#nextBody").textContent = body;
+      $("#nextStepBtn").textContent = stepDone(state.step) ? "رفتن به قدم بعدی" : "ادامه همین قدم";
+    }
+    function markRead(){
+      const id = lesson().id; const arr = new Set(state.readChunks[id] || []); arr.add(state.chunk||0); state.readChunks[id] = [...arr];
+    }
+    function markExample(){
+      const id = lesson().id; const arr = new Set(state.viewedExamples[id] || []); arr.add(state.example||0); state.viewedExamples[id] = [...arr];
+    }
+    function renderContent(){
+      const map = {learn:renderLearn, examples:renderExamples, predict:renderPredict, practice:renderPractice, reflect:renderReflect};
+      map[state.step]?.();
+    }
+    function renderLearn(){
+      markRead();
+      const l = lesson(), chunk = l.chunks[state.chunk] || l.chunks[0];
+      $("#content").innerHTML = `
+        <div class="section-title"><div><h2>یادگیری عمیق، در بخش‌های کوچک</h2><p>هر بخش یک ایده اصلی دارد. آرام بخوان، مثال ذهنی بساز، بعد ادامه بده.</p></div><span class="tag">${fa.format((state.chunk||0)+1)} / ${fa.format(l.chunks.length)}</span></div>
+        <div class="content-box lesson-chunk"><h3>${escapeHtml(chunk.heading)}</h3><p>${escapeHtml(chunk.body)}</p></div>
+        <div class="why-box"><b>چرا این مهم است؟</b><span>${escapeHtml(l.why)}</span></div>
+        <div class="content-box" style="margin-top:14px"><b>وقتی این درس را بلد شده‌ای که بتوانی:</b>${l.mastery.map(x=>`<div class="check-row done">✓ ${escapeHtml(x)}</div>`).join("")}</div>
+        <div class="nav-row"><button class="secondary" id="prevChunk" ${state.chunk<=0?'disabled':''}>قبلی</button><div class="dots">${l.chunks.map((_,i)=>`<span class="dot ${i===state.chunk?'active':''}"></span>`).join("")}</div><button class="primary" id="nextChunk">${state.chunk < l.chunks.length-1 ? 'بخش بعدی' : 'رفتن به مثال‌ها'}</button></div>`;
+      $("#prevChunk").onclick = ()=>{ state.chunk=Math.max(0,(state.chunk||0)-1); render(); };
+      $("#nextChunk").onclick = ()=>{ if(state.chunk < l.chunks.length-1){ state.chunk++; } else { state.step="examples"; state.example=0; } render(); };
+    }
+    function renderExamples(){
+      markExample();
+      const l=lesson(), ex=l.examples[state.example] || l.examples[0];
+      $("#content").innerHTML = `
+        <div class="section-title"><div><h2>مثال را بخوان، بعد دلیلش را بفهم</h2><p>مثال‌ها برای ساختن مدل ذهنی هستند. تمرین‌ها هنوز خالی می‌مانند.</p></div><span class="tag">${fa.format((state.example||0)+1)} / ${fa.format(l.examples.length)}</span></div>
+        <div class="content-box example-grid">
+          <div class="example-head"><h3>${escapeHtml(ex.title)}</h3><span class="tag">نمونه قابل تحلیل</span></div>
+          <pre class="code"><code>${escapeHtml(ex.code)}</code></pre>
+          <div><b>خروجی</b><pre class="output">${escapeHtml(ex.output)}</pre></div>
+          <p class="explain">${escapeHtml(ex.explain)}</p>
+        </div>
+        <div class="nav-row"><button class="secondary" id="prevExample" ${state.example<=0?'disabled':''}>مثال قبلی</button><div class="dots">${l.examples.map((_,i)=>`<span class="dot ${i===state.example?'active':''}"></span>`).join("")}</div><button class="primary" id="nextExample">${state.example < l.examples.length-1 ? 'مثال بعدی' : 'تمرین پیش‌بینی'}</button></div>`;
+      $("#prevExample").onclick=()=>{ state.example=Math.max(0,(state.example||0)-1); render(); };
+      $("#nextExample").onclick=()=>{ if(state.example < l.examples.length-1) state.example++; else state.step="predict"; render(); };
+    }
+    function renderPredict(){
+      const l=lesson(), p=l.predict, pred=state.predictions[l.id];
+      $("#content").innerHTML = `
+        <div class="section-title"><div><h2>قبل از اجرا، خروجی را حدس بزن</h2><p>این قدم فهم واقعی می‌سازد. وقتی حدس می‌زنی، مغزت مجبور می‌شود کد را خط‌به‌خط اجرا کند.</p></div></div>
+        <div class="content-box"><h3 style="margin-top:0">${escapeHtml(p.question)}</h3><pre class="code"><code>${escapeHtml(p.code)}</code></pre><div class="choice-list">${p.options.map((o,i)=>`<button class="choice ${pred?.choice===i?'selected':''} ${pred?.correct && i===p.answer?'ok':''} ${pred && pred.choice===i && !pred.correct?'bad':''}" data-choice="${i}"><span class="num">${fa.format(i+1)}</span><span>${escapeHtml(o)}</span></button>`).join("")}</div>${pred?`<div class="result ${pred.correct?'ok':'bad'}"><div class="label">${pred.correct?'درست است':'هنوز نه'}</div><div>${escapeHtml(p.explain)}</div></div>`:''}</div>
+        <div class="nav-row"><button class="secondary" id="backExamples">برگشت به مثال‌ها</button><button class="primary" id="toPractice" ${pred?.correct?'':'disabled'}>رفتن به تمرین</button></div>`;
+      $$("[data-choice]").forEach(btn=>btn.onclick=()=>{
+        const choice=Number(btn.dataset.choice); const correct=choice===p.answer;
+        state.predictions[l.id]={choice,correct}; if(correct){ addXP(12); toast("پیش‌بینی درست بود."); } else { state.weakSkills[l.skill]=(state.weakSkills[l.skill]||0)+1; toast("نزدیک شدی. توضیح را بخوان و دوباره تحلیل کن."); } render();
+      });
+      $("#backExamples").onclick=()=>{state.step="examples";render();};
+      $("#toPractice").onclick=()=>{state.step="practice";render();};
+    }
+    function exerciseState(ex=activeExercise()){ const id=lesson().id; return state.exercises[id]?.[ex.id] || {}; }
+    function setExerciseState(ex, data){ const id=lesson().id; state.exercises[id] ||= {}; state.exercises[id][ex.id] = {...(state.exercises[id][ex.id]||{}),...data}; }
+    function renderPractice(){
+      const l=lesson(), ex=activeExercise(), es=exerciseState(ex); const key=draftKey(ex);
+      const draft = state.drafts[key] || "";
+      $("#content").innerHTML = `
+        <div class="section-title"><div><h2>تمرین واقعی؛ از صفر بنویس</h2><p>ادیتور خالی است تا خودت ساختار کد را بسازی. مثال‌ها کمک می‌کنند، اما اینجا کپی‌کردن یادگیری نمی‌سازد.</p></div><span class="tag">${fa.format(passedExercises(l.id).length)} تمرین کامل</span></div>
+        <div class="exercise-tabs">${l.exercises.map((item,i)=>`<button class="exercise-tab ${i===state.exercise?'active':''} ${(state.exercises[l.id]?.[item.id]?.passed)?'done':''}" data-exercise="${i}">${fa.format(i+1)}. ${escapeHtml(item.title)}</button>`).join("")}</div>
+        <div class="workspace">
+          <div>
+            <div class="content-box">
+              <h3 style="margin:0 0 8px">${escapeHtml(ex.title)}</h3>
+              <p style="margin:0;color:var(--muted)">${escapeHtml(ex.brief)}</p>
+              <ul class="task-list">${ex.requirements.map(r=>`<li>${escapeHtml(r)}</li>`).join("")}</ul>
+            </div>
+            <div style="margin-top:14px">
+              <label class="sr-only" for="codeEditor">کد تمرین</label>
+              <textarea class="editor" id="codeEditor" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="کد خودت را اینجا از صفر بنویس...">${escapeHtml(draft)}</textarea>
+              <p class="empty-note">تمرین‌ها عمداً کد آماده ندارند. بهتر است اول شکل کلی را بنویسی، بعد اجرا و اصلاح کنی.</p>
+              <div class="nav-row">
+                <div class="split-actions"><button class="primary" id="runBtn">اجرای تست</button><button class="secondary" id="saveDraftBtn">ذخیره پیش‌نویس</button><button class="ghost" id="clearBtn">پاک کردن</button></div>
+                <button class="secondary" id="hintBtn">راهنمایی کوچک</button>
+              </div>
+              <div id="runResult" class="result ${es.passed?'ok':''}">${es.passed?'<div class="label">این تمرین قبول شده است.</div><div>می‌توانی تمرین بعدی را انجام دهی یا به جمع‌بندی بروی.</div>':'<div class="muted">بعد از اجرای تست، نتیجه اینجا نمایش داده می‌شود.</div>'}</div>
+            </div>
+          </div>
+          <aside class="side-mini">
+            <div class="mini-card"><h3>معیار کامل شدن</h3><p>برای رفتن به جمع‌بندی، حداقل دو تمرین این درس باید قبول شود.</p>${l.exercises.map(item=>`<div class="check-row ${state.exercises[l.id]?.[item.id]?.passed?'done':''}">${state.exercises[l.id]?.[item.id]?.passed?'✓':'○'} ${escapeHtml(item.title)}</div>`).join("")}</div>
+            <div class="mini-card"><h3>اگر گیر کردی</h3><p>اول پیام خطا را بخوان. بعد فقط یک چیز کوچک را تغییر بده و دوباره اجرا کن.</p><div id="hintBox"></div></div>
+          </aside>
+        </div>
+        <div class="nav-row"><button class="secondary" id="backPredict">برگشت به پیش‌بینی</button><button class="primary" id="toReflect" ${passedExercises(l.id).length>=2?'':'disabled'}>رفتن به جمع‌بندی</button></div>`;
+      $$("[data-exercise]").forEach(btn=>btn.onclick=()=>{ state.exercise=Number(btn.dataset.exercise); render(); });
+      const editor=$("#codeEditor");
+      editor.addEventListener("input",()=>{ state.drafts[key]=editor.value; save(); });
+      $("#saveDraftBtn").onclick=()=>{ state.drafts[key]=editor.value; save(); toast("پیش‌نویس ذخیره شد."); };
+      $("#clearBtn").onclick=()=>{ if(editor.value.trim() && !confirm("کد این تمرین پاک شود؟")) return; editor.value=""; state.drafts[key]=""; save(); };
+      $("#hintBtn").onclick=()=>showHint(ex);
+      $("#runBtn").onclick=()=>testExercise(ex, editor.value);
+      $("#backPredict").onclick=()=>{state.step="predict";render();};
+      $("#toReflect").onclick=()=>{state.step="reflect";render();};
+    }
+    function showHint(ex){
+      const key=draftKey(ex); state.hints[key]=(state.hints[key]||0)+1;
+      const idx=Math.min((state.hints[key]||1)-1, ex.hints.length-1);
+      $("#hintBox").innerHTML = `<div class="hint">${escapeHtml(ex.hints[idx])}</div>`;
+      state.weakSkills[lesson().skill]=(state.weakSkills[lesson().skill]||0)+1;
+      if((state.hints[key]||0) === 3) toast("یک مکث کوتاه مفید است: ۲۰ ثانیه نگاهت را از صفحه بردار، بعد برگرد.");
+      save();
+    }
+    async function testExercise(ex, code){
+      const resultBox=$("#runResult");
+      if(!code.trim()){ resultBox.className="result bad"; resultBox.innerHTML=`<div class="label">کدی نوشته نشده است.</div><div>ادیتور باید خالی شروع شود، اما برای تست باید راه‌حل خودت را بنویسی.</div>`; return; }
+      const key=draftKey(ex); state.drafts[key]=code; state.attempts[key]=(state.attempts[key]||0)+1; save();
+      resultBox.className="result"; resultBox.innerHTML=`<div class="label">در حال اجرای کد...</div><div class="muted">اگر اولین بار است، آماده شدن محیط پایتون کمی زمان می‌برد.</div>`;
+      let testCode = code + (ex.checks.appendTest || "");
+      const res = await runPython(testCode);
+      const out = normalizeOut(res.output);
+      if(!res.ok){
+        state.weakSkills[lesson().skill]=(state.weakSkills[lesson().skill]||0)+1; save();
+        resultBox.className="result bad"; resultBox.innerHTML=`<div class="label">کد اجرا نشد</div><div>${escapeHtml(friendlyError(res.output))}</div><pre>${escapeHtml(res.output)}</pre>`; return;
+      }
+      const missing = [];
+      (ex.checks.includes||[]).forEach(x=>{ if(!out.includes(x)) missing.push(`خروجی باید شامل «${x}» باشد.`); });
+      (ex.checks.mustContain||[]).forEach(x=>{ if(!code.includes(x)) missing.push(`کد باید از «${x}» استفاده کند.`); });
+      if(missing.length){
+        state.weakSkills[lesson().skill]=(state.weakSkills[lesson().skill]||0)+1; save();
+        resultBox.className="result bad"; resultBox.innerHTML=`<div class="label">هنوز کامل نیست</div><div>${escapeHtml(missing[0])}</div><pre>${escapeHtml(out || "بدون خروجی")}</pre>`; return;
+      }
+      setExerciseState(ex,{passed:true, passedAt:new Date().toISOString()});
+      addXP(35); save();
+      resultBox.className="result ok"; resultBox.innerHTML=`<div class="label">قبول شد</div><div>کدت شرط‌های تمرین را پاس کرد. حالا می‌توانی تمرین بعدی را حل کنی.</div><pre>${escapeHtml(out || "کد بدون خروجی اجرا شد.")}</pre>`;
+      const toReflect = $("#toReflect"); if(toReflect && passedExercises(lesson().id).length>=2) toReflect.disabled=false;
+      renderStats(); renderLessonList(); renderSteps(); renderNext();
+    }
+    function renderReflect(){
+      const l=lesson(); const text=state.reflections[l.id]||"";
+      const canComplete = stepDone("learn") && stepDone("examples") && stepDone("predict") && stepDone("practice") && text.trim().length>=20;
+      $("#content").innerHTML = `
+        <div class="section-title"><div><h2>جمع‌بندی کوتاه</h2><p>برای کامل شدن درس، یک توضیح کوتاه بنویس. هدف متن زیبا نیست؛ هدف روشن شدن فکر توست.</p></div></div>
+        <div class="content-box">
+          <h3 style="margin-top:0">سه جمله پیشنهادی</h3>
+          <ul class="task-list"><li>امروز فهمیدم که...</li><li>یکی از اشتباه‌هایی که ممکن است رخ دهد...</li><li>دفعه بعد وقتی گیر کردم، اول...</li></ul>
+          <textarea class="reflection" id="reflectionText" placeholder="اینجا با زبان خودت بنویس...">${escapeHtml(text)}</textarea>
+          <div class="mini-card" style="margin-top:14px"><h3>وضعیت کامل شدن</h3>
+            <div class="check-row ${stepDone('learn')?'done':''}">${stepDone('learn')?'✓':'○'} توضیح‌ها خوانده شده</div>
+            <div class="check-row ${stepDone('examples')?'done':''}">${stepDone('examples')?'✓':'○'} مثال‌ها بررسی شده</div>
+            <div class="check-row ${stepDone('predict')?'done':''}">${stepDone('predict')?'✓':'○'} پیش‌بینی درست انجام شده</div>
+            <div class="check-row ${stepDone('practice')?'done':''}">${stepDone('practice')?'✓':'○'} حداقل دو تمرین قبول شده</div>
+            <div class="check-row ${text.trim().length>=20?'done':''}">${text.trim().length>=20?'✓':'○'} جمع‌بندی کافی نوشته شده</div>
+          </div>
+        </div>
+        <div class="nav-row"><button class="secondary" id="backPractice">برگشت به تمرین</button><button class="primary" id="completeLesson" ${canComplete?'':'disabled'}>کامل کردن درس</button></div>`;
+      const area=$("#reflectionText");
+      area.addEventListener("input",()=>{ state.reflections[l.id]=area.value; save(); renderSteps(); renderNext(); const btn=$("#completeLesson"); if(btn){ btn.disabled = !(stepDone("learn") && stepDone("examples") && stepDone("predict") && stepDone("practice") && stepDone("reflect")); } });
+      $("#backPractice").onclick=()=>{state.step="practice";render();};
+      $("#completeLesson").onclick=()=>completeLesson();
+    }
+    function completeLesson(){
+      const id=lesson().id;
+      if(!stepDone("learn")||!stepDone("examples")||!stepDone("predict")||!stepDone("practice")||!stepDone("reflect")){ toast("همه بخش‌های درس باید کامل شوند."); return; }
+      if(!state.completed[id]){ state.completed[id]=new Date().toISOString(); addXP(60); }
+      toast("درس کامل شد. قدم بعدی باز شد.");
+      if(state.lessonIndex < LESSONS.length-1){ state.lessonIndex++; state.step="learn"; state.chunk=0; state.example=0; state.exercise=0; }
+      render();
+    }
+    function renderReview(){
+      const entries=Object.entries(state.weakSkills||{}).sort((a,b)=>b[1]-a[1]).slice(0,4);
+      if(!entries.length){ $("#reviewText").textContent="وقتی تمرینی سخت شود، اینجا مسیر مرور ساخته می‌شود."; $("#reviewSkills").innerHTML=""; return; }
+      $("#reviewText").textContent="این مهارت‌ها ارزش مرور دوباره دارند.";
+      $("#reviewSkills").innerHTML=entries.map(([skill,n])=>`<button class="lesson-item" data-review-skill="${escapeHtml(skill)}"><span class="num">↺</span><span class="lesson-text"><strong>${escapeHtml(skill)}</strong><span>${fa.format(n)} بار نیاز به توجه بیشتر</span></span><span class="tag">مرور</span></button>`).join("");
+      $$('[data-review-skill]').forEach(btn=>btn.onclick=()=>{
+        const skill=btn.dataset.reviewSkill; const i=LESSONS.findIndex(l=>l.skill===skill);
+        if(i>=0 && isUnlocked(i)){ state.lessonIndex=i; state.step="examples"; state.example=0; render(); }
+      });
+    }
+    function openProjects(){
+      const grid=$("#projectGrid");
+      grid.innerHTML = LESSONS.map((l,i)=>`
+        <article class="project-card">
+          <span class="tag">${escapeHtml(l.unit)}</span>
+          <h3>${escapeHtml(l.project.title)}</h3>
+          <p>${escapeHtml(l.project.brief)}</p>
+          <button class="secondary" data-open-project="${i}" ${!isUnlocked(i)?'disabled':''}>شروع پروژه</button>
+        </article>`).join("");
+      $("#projectModal").classList.add("show");
+      $$('[data-open-project]').forEach(btn=>btn.onclick=()=>{ state.lessonIndex=Number(btn.dataset.openProject); state.step="practice"; state.exercise=0; $("#projectModal").classList.remove("show"); render(); setTimeout(()=>openProjectWorkspace(), 0); });
+    }
+    function openProjectWorkspace(){
+      const l=lesson(); const project=l.project; const id=`project:${l.id}`; const draft=state.projectDrafts[id]||"";
+      $("#content").innerHTML = `
+        <div class="section-title"><div><h2>${escapeHtml(project.title)}</h2><p>${escapeHtml(project.brief)}</p></div><span class="tag">میکروپروژه</span></div>
+        <div class="workspace"><div><div class="content-box"><h3 style="margin-top:0">مراحل ساخت</h3><ul class="task-list">${project.steps.map(s=>`<li>${escapeHtml(s)}</li>`).join("")}</ul></div><div style="margin-top:14px"><textarea class="editor" id="projectEditor" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="پروژه را از صفر اینجا بساز...">${escapeHtml(draft)}</textarea><p class="empty-note">پروژه هم کد آماده ندارد. کوچک شروع کن، اجرا کن، بعد بهترش کن.</p><div class="nav-row"><div class="split-actions"><button class="primary" id="runProject">اجرای پروژه</button><button class="secondary" id="saveProject">ذخیره</button></div><button class="secondary" id="hintProject">راهنمایی</button></div><div id="projectResult" class="result"><div class="muted">خروجی پروژه اینجا نمایش داده می‌شود.</div></div></div></div><aside class="side-mini"><div class="mini-card"><h3>معیار پروژه</h3>${project.steps.map(s=>`<div class="check-row">○ ${escapeHtml(s)}</div>`).join("")}</div><div class="mini-card"><h3>راهنمایی</h3><div id="projectHintBox"><p>اول نسخه کوچک را بساز. بعد زیبایش کن.</p></div></div></aside></div>`;
+      const editor=$("#projectEditor"); editor.oninput=()=>{state.projectDrafts[id]=editor.value;save();};
+      $("#saveProject").onclick=()=>{state.projectDrafts[id]=editor.value;save();toast("پروژه ذخیره شد.");};
+      $("#hintProject").onclick=()=>{$("#projectHintBox").innerHTML=`<div class="hint">${escapeHtml(project.hints[Math.min((state.hints[id]||0), project.hints.length-1)])}</div>`; state.hints[id]=(state.hints[id]||0)+1; save();};
+      $("#runProject").onclick=async()=>{
+        const code=editor.value; state.projectDrafts[id]=code; save(); const box=$("#projectResult");
+        if(!code.trim()){box.className="result bad"; box.innerHTML="<div class='label'>کدی نوشته نشده است.</div>"; return;}
+        box.className="result"; box.innerHTML="<div class='label'>در حال اجرا...</div>";
+        const res=await runPython(code); const out=normalizeOut(res.output);
+        if(!res.ok){ box.className="result bad"; box.innerHTML=`<div class="label">کد اجرا نشد</div><div>${escapeHtml(friendlyError(res.output))}</div><pre>${escapeHtml(res.output)}</pre>`; return; }
+        const missing=[]; (project.checks.includes||[]).forEach(x=>{if(!out.includes(x)) missing.push(`خروجی باید شامل «${x}» باشد.`)}); (project.checks.mustContain||[]).forEach(x=>{if(!code.includes(x)) missing.push(`کد باید از «${x}» استفاده کند.`)});
+        if(missing.length){box.className="result bad"; box.innerHTML=`<div class="label">پروژه هنوز کامل نیست</div><div>${escapeHtml(missing[0])}</div><pre>${escapeHtml(out||"بدون خروجی")}</pre>`; return;}
+        state.projects[l.id]={passed:true, passedAt:new Date().toISOString()}; addXP(45); save(); box.className="result ok"; box.innerHTML=`<div class="label">پروژه اجرا شد</div><div>ساختار اصلی پروژه درست است. حالا می‌توانی آن را بهتر و خواناتر کنی.</div><pre>${escapeHtml(out||"کد بدون خروجی اجرا شد.")}</pre>`; renderStats();
+      };
+    }
+    function createRunner(){
+      const workerCode = `
+        let pyodideReady = null;
+        self.onmessage = async (event) => {
+          const {id, code} = event.data;
+          try {
+            if (!pyodideReady) {
+              importScripts('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js');
+              pyodideReady = loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'});
+            }
+            const pyodide = await pyodideReady;
+            pyodide.runPython("import sys, io\\n_stdout = io.StringIO()\\n_stderr = io.StringIO()\\nsys.stdout = _stdout\\nsys.stderr = _stderr");
+            let result = pyodide.runPython(code);
+            let output = pyodide.runPython("_stdout.getvalue() + _stderr.getvalue()");
+            if (result !== undefined && result !== null) output += String(result);
+            self.postMessage({id, ok:true, output});
+          } catch (error) {
+            self.postMessage({id, ok:false, output:String(error && error.message ? error.message : error)});
+          }
+        };`;
+      return new Worker(URL.createObjectURL(new Blob([workerCode], {type:"application/javascript"})));
+    }
+    function runPython(code){
+      if(!runner) runner=createRunner();
+      const id=++requestId;
+      return new Promise(resolve=>{
+        const timer=setTimeout(()=>{ try{runner.terminate();}catch{} runner=null; resolve({ok:false,output:"Timeout: اجرا بیش از حد طول کشید."}); },8000);
+        const handler=(event)=>{ if(event.data.id!==id) return; clearTimeout(timer); runner.removeEventListener("message",handler); resolve(event.data); };
+        runner.addEventListener("message",handler);
+        runner.postMessage({id,code});
+      });
+    }
+
+    $("#themeBtn").onclick=()=>{state.theme=state.theme==="dark"?"light":"dark";render();};
+    $("#calmBtn").onclick=()=>{state.calm=!state.calm;render();};
+    $("#focusBtn").onclick=()=>{state.focus=!state.focus;render();};
+    $("#nextStepBtn").onclick=()=>{
+      if(stepDone(state.step)){
+        const idx=stepIndex(); if(idx<STEPS.length-1) state.step=STEPS[idx+1].id;
+      }
+      render();
+    };
+    $("#mainActionBtn").onclick=()=>{$("#content").scrollIntoView({behavior:"smooth",block:"start"});};
+    $("#projectsBtn").onclick=openProjects;
+    $("#closeProjectModal").onclick=()=>$("#projectModal").classList.remove("show");
+    $("#projectModal").addEventListener("click",e=>{ if(e.target.id==="projectModal") e.currentTarget.classList.remove("show"); });
+    $("#exportBtn").onclick=()=>{
+      const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(), progress:state},null,2)],{type:"application/json"});
+      const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="python-studio-progress.json"; a.click(); URL.revokeObjectURL(a.href);
+    };
+    document.addEventListener("keydown", e=>{
+      if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="s"){ e.preventDefault(); save(); toast("پیشرفت ذخیره شد."); }
+      if(e.key==="Escape" && $("#projectModal").classList.contains("show")) $("#projectModal").classList.remove("show");
+    });
+    render();
+  })();
+  </script>
+</body>
+</html>
